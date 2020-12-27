@@ -47,7 +47,7 @@
                 <h4 class="mt-0 header-title">Users</h4>
 
                 
-                <table id="projectsTable" class="table table-hover" style="border-collapse: collapse; border-spacing: 0; width: 100%;">
+                <table id="usersTable" class="table table-hover" style="border-collapse: collapse; border-spacing: 0; width: 100%;">
 
                     <thead>
                     <tr>
@@ -90,7 +90,7 @@
 
     <script>
         $(document).ready(function() {
-            var table = $("#projectsTable").DataTable({
+            var table = $("#usersTable").DataTable({
                 ajax: {
                     url: "/api/users",
                     dataSrc: ""
@@ -107,7 +107,7 @@
                 },
                 columns: [
                     {
-                        data: "Id",
+                        data: "id",
                         render: function(data, type, user) {
 
                             return '<input id="aaa" type="checkbox" name="id" value="' + user.Id + '"/>';
@@ -138,7 +138,7 @@
             });
 
             //tick checkbox on row click
-            $('#projectsTable tbody').on('click',
+            $('#usersTable tbody').on('click',
                 'tr',
                 function(event) {
                     //ensure click not coming from the checkbox
@@ -156,7 +156,7 @@
 
                 var projectName = $("#projectName").val();
                 var description = $("#projectDescription").val();
-                var tableControl = $("#projectsTable");
+                var tableControl = $("#usersTable");
                 var usersArray = [];
 
                 $('input:checkbox:checked:not(#selectAll)', tableControl).each(function() {

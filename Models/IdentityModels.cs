@@ -11,6 +11,11 @@ namespace BugTracker.Models
     public class ApplicationUser : IdentityUser
     {
 
+        public ApplicationUser()
+        {
+            Projects = new List<Project>();
+        }
+
         public List<Project> Projects { get; set; }
 
             

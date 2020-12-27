@@ -16,6 +16,8 @@ namespace BugTracker.Persistance
 
         public DbSet<Project> Projects { get; set; }
 
+        public DbSet<Ticket> Tickets { get; set; }
+
         //public DbSet<UserExtension> UserExtensions { get; set; }
         public ApplicationDbContext()
             : base("DefaultConnection", throwIfV1Schema: false)
@@ -64,6 +66,7 @@ namespace BugTracker.Persistance
         {
 
             modelBuilder.Configurations.Add(new ProjectConfigurations());
+            modelBuilder.Configurations.Add(new TicketConfiguration());
 
             base.OnModelCreating(modelBuilder);
         }

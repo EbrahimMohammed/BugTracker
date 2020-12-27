@@ -48,7 +48,7 @@
             <div class="card-body">
 
 
-                <table id="projectsTable" class="table table-hover" style="border-collapse: collapse; border-spacing: 0; width: 100%;">
+                <table id="usersTable" class="table table-hover" style="border-collapse: collapse; border-spacing: 0; width: 100%;">
 
                     <thead>
                         <tr>
@@ -81,7 +81,7 @@
 
     <script>
         $(document).ready(function() {
-            $("#projectsTable").DataTable({
+            $("#usersTable").DataTable({
                 ajax: {
                     url: "/api/project",
                     dataSrc: ""
@@ -91,7 +91,7 @@
                         data: "Name",
                         render: function(data, type, project) {
 
-                            return "<a href='/movies/edit/" + project.id + "'>" + project.Name + "</a>";
+                            return "<a href='/project/edit/" + project.Id + "'>" + project.Name + "</a>";
                         }
                     },
                     {
@@ -112,9 +112,9 @@
                     }
                     //,
                     //{
-                    //    date: "Id",
+                    //    date: "id",
                     //    render: function(data, type, project) {
-                    //        return '<button class="btn btn-link js-delete" data-id="'+project.Id+'">delete</button>';
+                    //        return '<button class="btn btn-link js-delete" data-id="'+project.id+'">delete</button>';
 
                     //    }
 
@@ -123,7 +123,7 @@
             });
 
 
-            //$("#projectsTable").on('click', '.js-delete', function (e) {
+            //$("#usersTable").on('click', '.js-delete', function (e) {
 
             //    swal({
             //        title: "Are you sure?",

@@ -190,10 +190,14 @@
     <Compile Include="App_Start\WebApiConfig.cs" />
     <Compile Include="Contants\Menus.cs" />
     <Compile Include="Controllers\AccountController.cs" />
-    <Compile Include="Controllers\Api\BaseApiController.cs" />
+    <Compile Include="Core\Domain\Ticket.cs" />
     <Compile Include="Migrations\202012240002040_CreateProjectDeveloperMappingTable.cs" />
     <Compile Include="Migrations\202012240002040_CreateProjectDeveloperMappingTable.designer.cs">
       <DependentUpon>202012240002040_CreateProjectDeveloperMappingTable.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202012271919228_IntitialTicketsTable.cs" />
+    <Compile Include="Migrations\202012271919228_IntitialTicketsTable.designer.cs">
+      <DependentUpon>202012271919228_IntitialTicketsTable.cs</DependentUpon>
     </Compile>
     <Compile Include="Models\CreateProjectModel.cs" />
     <Compile Include="Controllers\Api\UsersController.cs" />
@@ -251,8 +255,10 @@
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Core\Domain\Project.cs" />
     <Compile Include="Models\IdModel.cs" />
+    <Compile Include="Models\UpdateProjectModel.cs" />
     <Compile Include="Persistance\ApplicationDbContext.cs" />
     <Compile Include="Persistance\EntityConfiguration\ProjectConfigurations.cs" />
+    <Compile Include="Persistance\EntityConfiguration\TicketConfiguration.cs" />
     <Compile Include="ViewModels\AccountViewModels.cs" />
     <Compile Include="Models\IdentityModels.cs" />
     <Compile Include="Models\ManageViewModels.cs" />
@@ -283,6 +289,7 @@
     <Content Include="fonts\typicons.svg" />
     <Content Include="Global.asax" />
     <Content Include="Content\Site.css" />
+    <Content Include="images\add-icon.png" />
     <Content Include="images\bg-1.png" />
     <Content Include="images\directory-bg.jpg" />
     <Content Include="images\favicon.ico" />
@@ -459,6 +466,7 @@
     <Content Include="Views\Dashboard\Index.cshtml" />
     <Content Include="Views\Project\Index.cshtml" />
     <Content Include="Views\Project\Create.cshtml" />
+    <Content Include="Views\Project\Edit.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
@@ -509,6 +517,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\202012240002040_CreateProjectDeveloperMappingTable.resx">
       <DependentUpon>202012240002040_CreateProjectDeveloperMappingTable.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202012271919228_IntitialTicketsTable.resx">
+      <DependentUpon>202012271919228_IntitialTicketsTable.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>
