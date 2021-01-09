@@ -1,7 +1,6 @@
 ﻿@section styles {
     <!-- DataTables -->
 
-
 }
 
 <div class="row">
@@ -32,17 +31,17 @@
     </div>
 </div>
 
-<div class="row">
+<div class="row mb-2">
     <div class="col-md-12 text-right">
-        
-        
-        @Html.ActionLink("New project","Create","Project","",new {@class="btn btn-create"})
+
+
+        @Html.ActionLink("New project",$"Create","Project","",new {@class="btn btn-create"})
 
     </div>
 
 </div>
 
-<div class="row mt-2">
+<div class="row">
     <div class="col-12">
         <div class="card m-b-20">
             <div class="card-body">
@@ -54,8 +53,8 @@
                         <tr>
                             <th>Name</th>
                             <th>Created Date</th>
-                            <th>Project Manager</th>
-                            <th>Developers</th>
+                            <th>Team</th>
+                            <th>Edit</th>
                         </tr>
                     </thead>
 
@@ -86,76 +85,51 @@
                     url: "/api/project",
                     dataSrc: ""
                 },
-                columns: [
-                    {
-                        data: "Name",
-                        render: function(data, type, project) {
 
-                            return "<a href='/project/edit/" + project.Id + "'>" + project.Name + "</a>";
-                        }
-                    },
-                    {
-                        data: "CreatedDate",
-                        render: function(data, type, project) {
+                aoColumnDefs: [
+                    { "searchable": false, "bSortable": false, "aTargets": [3] }
+            ],
+            columns: [
+                {
+                    data: "Name",
+                    render: function(data, type, project) {
 
-                            var date = new Date(data);
-
-                            return date.getDate() + "-" + (date.getMonth() + 1) + "-" + date.getFullYear();;
-
-                        }
-                    },
-                    {
-                        data: "Id"
-                    },
-                    {
-                        data: "Id"
+                        return "<a href='/project/details/" + project.Id + "'>" + project.Name + "</a>";
                     }
-                    //,
-                    //{
-                    //    date: "id",
-                    //    render: function(data, type, project) {
-                    //        return '<button class="btn btn-link js-delete" data-id="'+project.id+'">delete</button>';
+                },
+                {
+                    data: "CreatedDate",
+                    render: function(data, type, project) {
 
-                    //    }
+                        var date = new Date(data);
 
-                    // }
-                ]
-            });
+                        return date.getDate() + "-" + (date.getMonth() + 1) + "-" + date.getFullYear();;
 
+                    }
+                },
+                {
+                    data: "Developers",
+                    render: function(data, type, project) {
 
-            //$("#usersTable").on('click', '.js-delete', function (e) {
+                        return '<i class="fas fa-user-friends fa-lg"></i>' + project.Developers.length;
 
-            //    swal({
-            //        title: "Are you sure?",
-            //        text: "Would you like to delete this project!",
-            //        type: "warning",
-            //        showCancelButton: true,
-            //        confirmButtonColor: "#DD6B55",
-            //        confirmButtonText: "Yes, delete it!",
-            //        closeOnConfirm: false
-            //    }, function (isConfirm) {
-            //        if (!isConfirm) return;
-            //        $.ajax({
-            //            url: "/api/project",
-            //            type: "DELETE",
-            //            data: {
-            //                id: 5
-            //            },
-            //            success: function () {
-            //                swal("Done!", "It was succesfully deleted!", "success");
-            //            },
-            //            error: function (xhr, ajaxOptions, thrownError) {
-            //                swal("Error deleting!", "Please try again", "error");
-            //            }
-            //        });
-            //    });
-            //});
+                    }
+                },
+                {
+                    date: "Id",
+                    render: function(data, type, project) {
 
-            
+                        return "<a href='/project/edit/" + project.Id + "'><i class='far fa-edit fa-lg'></i></a>";
 
+                    }
+
+                }
+            ]
         });
+
+
+    });
     </script>
 }
-
 
 

@@ -3520,7 +3520,7 @@ Invoice
 input.input-validation-error,
 textarea.input-validation-error,
 select.input-validation-error,
-.border-red{
+.border-red {
     border: 1px solid #CD0A0A;
 }
 
@@ -3554,7 +3554,7 @@ a {
 }
 
 .page-title-box .page-title {
-    font-size: 18px;
+    font-size: 14px;
     margin: 0;
     line-height: 30px;
 }
@@ -3603,6 +3603,21 @@ a {
     box-shadow: none;
 }
 
+/*input[type=search] {
+    width: 120px;
+}
 
 
+input[type="search"] {
+    width: 100px !important;
+}
+*/
+#teamTable_filter input[type="search"] {
+    width: 100px !important;
+}
+
+
+.side-menue-text {
+    font-size: 13px;
+}
 

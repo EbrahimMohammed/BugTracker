@@ -12,6 +12,7 @@ namespace BugTracker
             config.MapHttpAttributeRoutes();
             //config.Filters.Add(new AuthorizeAttribute());
 
+
             config.Routes.MapHttpRoute(
                 name: "DefaultApi",
                 routeTemplate: "api/{controller}/{id}",

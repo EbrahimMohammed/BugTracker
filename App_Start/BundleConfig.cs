@@ -21,7 +21,7 @@ namespace BugTracker
                 "~/Scripts/jquery.validate*"));
 
 
-                bundles.Add(new ScriptBundle("~/bundles/datatables").Include(
+                bundles.Add(new ScriptBundle("~/bundles/pluginsjs").Include(
                     "~/plugins/datatables/jquery.datatables.min.js",
                     "~/plugins/datatables/datatables.bootstrap4.min.js",
                     "~/plugins/datatables/dataTables.buttons.min.js",
@@ -35,8 +35,13 @@ namespace BugTracker
                     "~/plugins/datatables/dataTables.responsive.min.js",
                     "~/plugins/datatables/responsive.bootstrap4.min.js",
                     "~/plugins/datatables/Select-1.3.1/js/*.js",
-                    "~/Scripts/pages/datatables.init.js"
-                    ));
+                    "~/plugins/select2/js/select2.js",
+                    "~/plugins/bootstrap-datepicker/js/bootstrap-datepicker.js",
+                    "~/plugins/toaster/toaster.js",
+                    "~/plugisn/parsleyjs/parsley.min.js"
+
+
+                   ));
 
 
              bundles.Add(new ScriptBundle("~/bundles/swal").Include(
@@ -45,27 +50,28 @@ namespace BugTracker
 
 
 
+
+
+
+
+             
+                bundles.Add(new StyleBundle("~/bundles/pluginscss").Include(
+                    "~/plugins/datatables/dataTables.bootstrap4.min.css",
+                    "~/plugins/datatables/buttons.bootstrap4.min.css",
+                    "~/plugins/datatables/responsive.bootstrap4.min.css",
+                    "~/plugins/datatables/Select-1.3.1/css/*.css",
+                    "~/plugins/select2/css/select2.min.css",
+                    "~/plugins/bootstrap-datepicker/dist/css/bootstrap-datepicker.min.css",
+                    "~/plugins/toaster/toaster.css"
+
+            ));
+
             bundles.Add(new StyleBundle("~/Content/css").Include(
                 "~/Content/bootstrap.min.css",
                 "~/Content/metismenu.min.css",
                 "~/Content/icons.css",
                 "~/Content/style.css"));
 
-     
-            
-            bundles.Add(new StyleBundle("~/plugins/datatables").Include(
-                    "~/plugins/datatables/dataTables.bootstrap4.min.css",
-                    "~/plugins/datatables/buttons.bootstrap4.min.css",
-                    "~/plugins/datatables/responsive.bootstrap4.min.css",
-                    "~/plugins/datatables/Select-1.3.1/css/*.css"
-            ));
-            
-            bundles.Add(new StyleBundle("~/plugins/datatables").Include(
-                    "~/plugins/datatables/dataTables.bootstrap4.min.css",
-                    "~/plugins/datatables/buttons.bootstrap4.min.css",
-                    "~/plugins/datatables/responsive.bootstrap4.min.css"));
-            
-            
             bundles.Add(new StyleBundle("~/plugins/swal").Include(
                 "~/plugins/sweet-alert2/sweetalert2.min.css"));
 

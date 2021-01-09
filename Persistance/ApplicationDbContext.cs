@@ -18,6 +18,15 @@ namespace BugTracker.Persistance
 
         public DbSet<Ticket> Tickets { get; set; }
 
+        public DbSet<TicketStatus> TicketStatuses { get; set; }
+
+
+        public DbSet<Priority> Priorities { get; set; }
+
+        public DbSet<TicketType> TicketTypes { get; set; }
+
+
+
         //public DbSet<UserExtension> UserExtensions { get; set; }
         public ApplicationDbContext()
             : base("DefaultConnection", throwIfV1Schema: false)
@@ -67,6 +76,8 @@ namespace BugTracker.Persistance
 
             modelBuilder.Configurations.Add(new ProjectConfigurations());
             modelBuilder.Configurations.Add(new TicketConfiguration());
+            modelBuilder.Configurations.Add(new TicketTypeConfigurations());
+       
 
             base.OnModelCreating(modelBuilder);
         }

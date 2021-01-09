@@ -32,7 +32,10 @@ namespace BugTracker.Controllers.Api
         public IHttpActionResult GetProjects()
         {
 
-            var projectsDto = _context.Projects.ToList().Select(Mapper.Map<Project, ProjectDto>);
+            var projectsDto = _context.Projects
+                .Include(p =>p.Developers)
+                .ToList()
+                .Select(Mapper.Map<Project, ProjectDto>);
 
 
             return Ok(projectsDto);

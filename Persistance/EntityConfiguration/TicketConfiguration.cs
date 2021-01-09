@@ -15,7 +15,23 @@ namespace BugTracker.Persistance.EntityConfiguration
             Property(t => t.Title)
                 .HasMaxLength(500)
                 .IsRequired();
+
+
+            HasRequired(t => t.Status)
+                .WithMany(s => s.Tickets)
+                .HasForeignKey(t => t.StatusId);
+
+            HasOptional(t => t.AssignedDeveloper)
+                .WithMany(u => u.Tickets)
+                .HasForeignKey(t => t.AssignedDeveloperId);
+
+
+            HasRequired(t => t.TicketType)
+                .WithMany(tt => tt.Tickets)
+                .HasForeignKey(t => t.TicketTypeId);
+
             
+
         }
     }
 }

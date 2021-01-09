@@ -42,7 +42,8 @@ namespace BugTracker.Controllers
             {
                 Id= project.Id,
                 Name = project.Name,
-                Description = project.Description
+                Description = project.Description,
+                
             };
 
 
@@ -51,5 +52,21 @@ namespace BugTracker.Controllers
 
             return View(updateProjectModel);
         }
+
+        public ActionResult Details(int id)
+        {
+
+            var project = _context.Projects.Single(p => p.Id == id);
+
+
+            if (project == null)
+                return HttpNotFound();
+
+            return View(project);
+
+
+        }
+
+
     }
 }

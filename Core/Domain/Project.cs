@@ -16,6 +16,6 @@ namespace BugTracker.Core.Domain
 
         public List<ApplicationUser> Developers { get; set; }
 
-
+        public List<Ticket> Tickets { get; set; }
     }
 }

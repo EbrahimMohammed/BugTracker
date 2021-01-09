@@ -1,6 +1,7 @@
 ﻿using System;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using BugTracker.Models;
 
 namespace BugTracker.Core.Domain
 {
@@ -13,6 +14,7 @@ namespace BugTracker.Core.Domain
             IsDeleted = false;
             IsEnabled = true;
         }
+        [Required]
         public int Id { get; set; }
 
         public DateTime CreatedDate { get; set; } 
@@ -23,8 +25,13 @@ namespace BugTracker.Core.Domain
 
         public bool IsDeleted { get; set; }
 
+        [ForeignKey("CreatedByTable")]
         public string CreatedBy { get; set; }
 
+        [ForeignKey("ModifiedByTable")]
         public string ModifiedBy { get; set; }
+        public ApplicationUser CreatedByTable { get; set; }
+
+        public ApplicationUser ModifiedByTable { get; set; }
     }
 }

@@ -18,5 +18,7 @@ namespace BugTracker.Dtos
 
         public DateTime CreatedDate { get; set; }
 
+        public List<UserDto> Developers { get; set; }
+
     }
 }

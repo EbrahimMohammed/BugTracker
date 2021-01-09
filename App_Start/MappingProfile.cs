@@ -2,6 +2,7 @@
 using BugTracker.Core.Domain;
 using BugTracker.Dtos;
 using BugTracker.Models;
+using Microsoft.AspNet.Identity.EntityFramework;
 
 
 namespace BugTracker
@@ -15,7 +16,22 @@ namespace BugTracker
             
             
             Mapper.CreateMap<ApplicationUser, UserDto>();
-            Mapper.CreateMap<UserDto, ApplicationUser>();
+            Mapper.CreateMap<UserDto, ApplicationUser>();        
+            
+            
+            Mapper.CreateMap<Ticket, TicketDto>();
+
+            Mapper.CreateMap<Priority, PriorityDto>();
+
+            Mapper.CreateMap<TicketStatus, TicketStatusDto>();
+
+            Mapper.CreateMap<TicketType, TicketTypeDto>();
+
+
+            Mapper.CreateMap<IdentityUserRole, RoleDto>();
+
+
+
         }
     }
 }

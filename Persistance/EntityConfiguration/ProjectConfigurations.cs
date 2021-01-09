@@ -27,6 +27,10 @@ namespace BugTracker.Persistance.EntityConfiguration
                     cs.ToTable("ProjectDeveloper");
                 });
 
+            HasMany(p => p.Tickets)
+                .WithRequired(t => t.Project)
+                .HasForeignKey(p => p.ProjectId);
+ 
         }
     }
 }
