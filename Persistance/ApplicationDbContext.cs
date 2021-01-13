@@ -25,6 +25,10 @@ namespace BugTracker.Persistance
 
         public DbSet<TicketType> TicketTypes { get; set; }
 
+        public DbSet<File> Files { get; set; }
+
+        public DbSet<Comments> Comments { get; set; }
+
 
 
         //public DbSet<UserExtension> UserExtensions { get; set; }
@@ -51,7 +55,6 @@ namespace BugTracker.Persistance
                     E.Entity.CreatedBy =  HttpContext.Current.User.Identity.GetUserId();
                     E.Entity.ModifiedBy = HttpContext.Current.User.Identity.GetUserId();
 
-
                 });
 
                 var ModifiedEntities = ChangeTracker.Entries<BaseEntity>().Where(E => E.State == EntityState.Modified)
@@ -77,6 +80,8 @@ namespace BugTracker.Persistance
             modelBuilder.Configurations.Add(new ProjectConfigurations());
             modelBuilder.Configurations.Add(new TicketConfiguration());
             modelBuilder.Configurations.Add(new TicketTypeConfigurations());
+            modelBuilder.Configurations.Add(new FileConfiguration());
+            modelBuilder.Configurations.Add(new CommentsConfigurations());
        
 
             base.OnModelCreating(modelBuilder);

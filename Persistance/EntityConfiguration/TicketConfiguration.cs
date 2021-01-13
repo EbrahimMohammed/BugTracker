@@ -30,7 +30,7 @@ namespace BugTracker.Persistance.EntityConfiguration
                 .WithMany(tt => tt.Tickets)
                 .HasForeignKey(t => t.TicketTypeId);
 
-            
+
 
         }
     }

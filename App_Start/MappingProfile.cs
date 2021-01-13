@@ -30,6 +30,10 @@ namespace BugTracker
 
             Mapper.CreateMap<IdentityUserRole, RoleDto>();
 
+            Mapper.CreateMap<File, FileDto>();
+
+            Mapper.CreateMap<Comments, CommentsDto>();
+
 
 
         }

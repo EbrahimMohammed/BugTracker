@@ -21,27 +21,4 @@ namespace BugTracker.Models
 
         public IEnumerable<TicketType> TicketTypes { get; set; }
     }
-
-
-    public class UpdateTicketViewModel
-    {
-
-        [DisplayName("Developers")]
-        public IEnumerable<ApplicationUser> ProjectUsers { get; set; }
-
-        public Ticket Ticket { get; set; }
-
-        public IEnumerable<Priority> Priorities { get; set; }
-
-
-        public IEnumerable<TicketType> TicketTypes { get; set; }
-
-        public IEnumerable<TicketStatus> TicketStatus { get; set; }
-
-
-        
-
-
-
-    }
 }

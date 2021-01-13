@@ -1,0 +1,63 @@
+﻿@model BugTracker.Models.FileModel
+
+@using (Html.BeginForm("FileUpload", "Ticket", FormMethod.Post, new { enctype = "multipart/form-data" }))
+{
+
+    <div class="col-md-7">
+
+        <div class="card m-b-20">
+            <div class="card-body">
+
+                <h4 class="mt-0 header-title">File Attachment</h4>
+                <div class="row">
+
+
+                    <div class="form-group col-md-6">
+                        @Html.LabelFor(m => m.Description)
+                        @Html.TextBoxFor(m => m.Description, new { @class = "form-control" })
+                        @Html.ValidationMessageFor(m => m.Description, "", new { @class = "text-danger" })
+
+                    </div>
+
+                    <div class="form-group col-md-6">
+                        <label>Default file input</label>
+                        @Html.TextBoxFor(m => m.FileUpload, new { type = "file", @class = "filestyle", data_buttonname = "btn-secondary" })
+                        @Html.ValidationMessageFor(m => m.FileUpload, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+
+                <div class="form-group text-right">
+                    <div>
+                        <button id="btn-submit" type="submit" class="btn btn-primary waves-effect waves-light">
+                            Upload
+                        </button>
+
+                    </div>
+                </div>
+
+                <table id="attachments" class="table table-hover" style="border-collapse: collapse; border-spacing: 0; width: 100%;">
+
+                    <thead>
+                        <tr>
+                            <th>Description</th>
+                            <th>Uploader</th>
+                            <th>Download</th>
+
+                        </tr>
+                    </thead>
+
+
+                </table>
+
+
+
+
+
+            </div>
+        </div>
+
+    </div>
+
+    @Html.HiddenFor(m => m.TicketId)
+}
+

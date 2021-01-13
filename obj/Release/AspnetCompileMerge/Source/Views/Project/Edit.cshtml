@@ -1,0 +1,264 @@
+﻿@model BugTracker.Models.UpdateProjectModel
+
+
+
+
+
+<form>
+
+    <div class="row">
+        <div class="col-lg-12">
+            <div class="card m-b-20">
+                <div class="card-body">
+
+                    <h4 class="mt-0 header-title">Project details</h4>
+
+                    <div class="row">
+                        <div class="col-sm-6">
+                            <div class="form-group">
+                                @Html.LabelFor(m => m.Name)
+                                @Html.TextBoxFor(m => m.Name, new { @class = "form-control", id = "projectName", required = "required" })
+                                @Html.ValidationMessageFor(m => m.Name, "", new { @class = "text-danger" })
+
+                            </div>
+                        </div>
+
+                        <div class="col-sm-6">
+                            <div class="form-group">
+                                @Html.LabelFor(m => m.Description)
+                                @Html.TextAreaFor(m => m.Description, new { @class = "form-control", id = "projectDescription", rows = 4 })
+                            </div>
+                        </div>
+
+                    </div>
+
+
+
+
+                </div>
+            </div>
+        </div> <!-- end col -->
+
+    </div>
+
+
+    <div class="row">
+        <div class="col-md-6">
+            <div class="card m-b-20">
+                <div class="card-body">
+
+                    <h4 class="mt-0 header-title">Current developers</h4>
+
+
+                    <table id="currentDevelopers" class="table table-hover" style="border-collapse: collapse; border-spacing: 0; width: 100%;">
+
+                        <thead>
+                            <tr>
+                                <th>Name</th>
+                                <th>Email</th>
+                                <th></th>
+                            </tr>
+                        </thead>
+
+
+                    </table>    
+
+
+
+                </div>
+            </div>
+        </div> <!-- end col -->
+
+        <div class="col-md-6">
+            <div class="card m-b-20">
+                <div class="card-body">
+
+                    <h4 class="mt-0 header-title">Developers</h4>
+
+
+                    <table id="developersTable" class="table table-hover" style="border-collapse: collapse; border-spacing: 0; width: 100%;">
+
+                        <thead>
+                            <tr>
+                                <th>Name</th>
+                                <th>Email</th>
+                                <th></th>
+                            </tr>
+                        </thead>
+
+
+                    </table>
+
+
+
+                </div>
+            </div>
+        </div> <!-- end col -->
+
+    </div> <!-- end row -->
+
+
+    <div class="row">
+        <div class="col-lg-12">
+            <div class="form-group text-right">
+                <div>
+                    <button id="btn-submit" type="submit" class="btn btn-primary waves-effect waves-light">
+                        Update
+                    </button>
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+</form>
+
+@section scripts {
+
+
+    <script>
+        $(document).ready(function() {
+            var developersTable = $("#developersTable").DataTable({
+                ajax: {
+                    url: "/api/users/GetAvailableUsers",
+                    data: {id: @Model.Id},
+                    dataSrc: ""
+                },
+                columns: [
+                    {
+                        data: "UserName"
+
+                    },
+                    {
+                        data: "Email"
+
+                    }, {
+                        data: "Id",
+                        render: function (data, type, user) {
+                            return '<a class="add-user" data-id="' + data + '" href="#">Add</a>';
+                        }
+
+                    }
+                ]
+            });
+
+
+            var currentDevelopers = $("#currentDevelopers").DataTable({
+                ajax: {
+                    url: "/api/users/getProjectUsers",
+                    data: { id: @Model.Id },
+                    dataSrc: ""
+                },
+                columns: [
+                    {
+                        data: "UserName"
+
+                    },
+                    {
+                        data: "Email"
+
+                    },
+                    {
+                        data: "Id",
+                        render: function(data, type, user) {
+                            return '<a class="remove-user" data-id="' + data + '" href="#">remove</a>';
+
+                        }
+
+                    }
+                ]
+            });
+
+
+            $("#developersTable").on("click", ".add-user", function() {
+
+                    var row = $(this).parents('tr');
+                    var userName = row.find("td:eq(0)").text();
+                    var email = row.find("td:eq(1)").text();
+                    var id = row.find("td:eq(2) a").attr('data-id');
+
+
+                   developersTable.row(row).remove().draw();
+
+                    var rowNode = currentDevelopers.row.add({
+                        "UserName": userName,
+                        "Email": email,
+                        "Id": id
+                    }).draw().node();
+
+                    //$(rowNode).css('background-color', 'greenyellow').
+                    //    css('obacity', '0.5');
+
+                });
+
+            $("#currentDevelopers").on("click", ".remove-user", function() {
+
+                    var row = $(this).parents('tr');
+                    var userName = row.find("td:eq(0)").text();
+                    var email = row.find("td:eq(1)").text();
+                    var id = row.find("td:eq(2) a").attr('data-id');
+
+
+                    currentDevelopers.row(row).remove().draw();
+
+                    var rowNode = developersTable.row.add({
+                        "UserName": userName,
+                        "Email": email,
+                        "Id": id
+                    }).draw().node();
+
+
+                });
+
+
+
+
+            $("form").submit(function(e) {
+
+                e.preventDefault();
+
+                var projectName = $("#projectName").val();
+                var description = $("#projectDescription").val();
+                var tableControl = $("#currentDevelopers");
+                var usersArray = [];
+
+                $("#currentDevelopers tr td:nth-child(3) a").each(function () {
+                    usersArray.push($(this).attr('data-id'));
+
+                });
+
+                console.log(usersArray);
+
+
+
+
+                $.ajax({
+                    type: "POST",
+                    url: "/api/project/updateProject",
+                    data: {Id:@Model.Id , Name: projectName, Description: description, UsersIds: usersArray },
+
+                    success: function (result) {
+
+                        Swal.fire({
+                                    title: 'Project updated successfully',
+                                    icon: 'success'
+                        }).then((result) => {
+
+                            window.location.href = "/project/index";
+
+                        });
+
+                    },
+                    error: function(result) {
+          
+
+                    }
+                });
+
+            });
+
+
+        });
+    </script>
+}
+

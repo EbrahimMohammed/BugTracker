@@ -554,3 +554,8 @@ D:\Bug tracker - current\BugTracker\obj\Debug\BugTracker.Migrations.PopulateTheR
 D:\Bug tracker - current\BugTracker\bin\Toast.exe
 D:\Bug tracker - current\BugTracker\bin\Toaster.dll
 D:\Bug tracker - current\BugTracker\bin\ToolBelt.dll
+D:\Bug tracker - current\BugTracker\obj\Debug\BugTracker.Migrations.CreateFileTable.resources
+D:\Bug tracker - current\BugTracker\obj\Debug\BugTracker.Migrations.AddNamePropertyToFile.resources
+D:\Bug tracker - current\BugTracker\obj\Debug\BugTracker.Migrations.MapTicketToFile.resources
+D:\Bug tracker - current\BugTracker\obj\Debug\BugTracker.Migrations.CreateCommentTable.resources
+D:\Bug tracker - current\BugTracker\obj\Debug\BugTracker.Migrations.LinkCommentsToTicket.resources

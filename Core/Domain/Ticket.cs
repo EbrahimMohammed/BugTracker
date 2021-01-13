@@ -40,5 +40,12 @@ namespace BugTracker.Core.Domain
         public TicketType TicketType { get; set; }
 
 
+        public List<File> Files { get; set; }
+
+
+        public List<Comments> Comments { get; set; }
+
+
     }
+
 }

@@ -202,9 +202,14 @@
     <Compile Include="App_Start\WebApiConfig.cs" />
     <Compile Include="Contants\Menus.cs" />
     <Compile Include="Controllers\AccountController.cs" />
+    <Compile Include="Controllers\Api\CommentsController.cs" />
+    <Compile Include="Dtos\CommentsDto.cs" />
     <Compile Include="Controllers\Api\TicketsController.cs" />
     <Compile Include="Controllers\ManageUsersController.cs" />
+    <Compile Include="Core\Domain\Comments.cs" />
+    <Compile Include="Core\Domain\File.cs" />
     <Compile Include="Core\Domain\TicketType.cs" />
+    <Compile Include="Dtos\FileDto.cs" />
     <Compile Include="Dtos\PriorityDto.cs" />
     <Compile Include="Dtos\RoleDto.cs" />
     <Compile Include="Dtos\TicketDto.cs" />
@@ -271,7 +276,28 @@
     <Compile Include="Migrations\202101060349239_PopulateTheRestRoles.designer.cs">
       <DependentUpon>202101060349239_PopulateTheRestRoles.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\202101090158057_CreateFileTable.cs" />
+    <Compile Include="Migrations\202101090158057_CreateFileTable.designer.cs">
+      <DependentUpon>202101090158057_CreateFileTable.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202101090733082_AddNamePropertyToFile.cs" />
+    <Compile Include="Migrations\202101090733082_AddNamePropertyToFile.designer.cs">
+      <DependentUpon>202101090733082_AddNamePropertyToFile.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202101090742560_MapTicketToFile.cs" />
+    <Compile Include="Migrations\202101090742560_MapTicketToFile.designer.cs">
+      <DependentUpon>202101090742560_MapTicketToFile.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202101130120079_CreateCommentTable.cs" />
+    <Compile Include="Migrations\202101130120079_CreateCommentTable.designer.cs">
+      <DependentUpon>202101130120079_CreateCommentTable.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202101130126016_LinkCommentsToTicket.cs" />
+    <Compile Include="Migrations\202101130126016_LinkCommentsToTicket.designer.cs">
+      <DependentUpon>202101130126016_LinkCommentsToTicket.cs</DependentUpon>
+    </Compile>
     <Compile Include="Models\AssignRoleModel.cs" />
+    <Compile Include="Models\CreateCommentModel.cs" />
     <Compile Include="Models\CreateProjectModel.cs" />
     <Compile Include="Controllers\Api\UsersController.cs" />
     <Compile Include="Controllers\DashboardController.cs" />
@@ -332,7 +358,10 @@
     <Compile Include="Models\ManageUsersModel.cs" />
     <Compile Include="Models\Roles.cs" />
     <Compile Include="Models\UpdateProjectModel.cs" />
+    <Compile Include="Models\UpdateTicketViewModel.cs" />
     <Compile Include="Persistance\ApplicationDbContext.cs" />
+    <Compile Include="Persistance\EntityConfiguration\CommentsConfigurations.cs" />
+    <Compile Include="Persistance\EntityConfiguration\FileConfiguration.cs" />
     <Compile Include="Persistance\EntityConfiguration\PriorityConfiguration.cs" />
     <Compile Include="Persistance\EntityConfiguration\ProjectConfigurations.cs" />
     <Compile Include="Persistance\EntityConfiguration\TicketConfiguration.cs" />
@@ -533,6 +562,8 @@
     <Content Include="plugins\bootstrap-datepicker\js\locales\bootstrap-datepicker.vi.js" />
     <Content Include="plugins\bootstrap-datepicker\js\locales\bootstrap-datepicker.zh-CN.js" />
     <Content Include="plugins\bootstrap-datepicker\js\locales\bootstrap-datepicker.zh-TW.js" />
+    <Content Include="plugins\bootstrap-filestyle\js\bootstrap-filestyle.js" />
+    <Content Include="plugins\bootstrap-filestyle\js\bootstrap-filestyle.min.js" />
     <Content Include="plugins\datatables\buttons.bootstrap4.min.css" />
     <Content Include="plugins\datatables\buttons.bootstrap4.min.js" />
     <Content Include="plugins\datatables\buttons.colVis.min.js" />
@@ -700,6 +731,7 @@
     <Content Include="Content\scss\_variables.scss" />
     <Content Include="Content\scss\_waves.scss" />
     <Content Include="Content\scss\_widgets.scss" />
+    <None Include="Properties\PublishProfiles\FTPProfile.pubxml" />
     <None Include="Scripts\jquery-3.4.1.intellisense.js" />
     <None Include="Scripts\jquery-1.10.2.intellisense.js" />
     <Content Include="Scripts\jquery-1.10.2.js" />
@@ -768,9 +800,11 @@
     <Content Include="Views\Ticket\Create.cshtml" />
     <Content Include="Views\Ticket\Details.cshtml" />
     <Content Include="Views\ManageUsers\Index.cshtml" />
+    <Content Include="Views\Ticket\_FileUpload.cshtml" />
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="App_Data\" />
+    <Folder Include="App_Data\uploads\" />
+    <Folder Include="Views\Comments\" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="fonts\glyphicons-halflings-regular.woff2" />
@@ -857,6 +891,21 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\202101060349239_PopulateTheRestRoles.resx">
       <DependentUpon>202101060349239_PopulateTheRestRoles.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202101090158057_CreateFileTable.resx">
+      <DependentUpon>202101090158057_CreateFileTable.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202101090733082_AddNamePropertyToFile.resx">
+      <DependentUpon>202101090733082_AddNamePropertyToFile.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202101090742560_MapTicketToFile.resx">
+      <DependentUpon>202101090742560_MapTicketToFile.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202101130120079_CreateCommentTable.resx">
+      <DependentUpon>202101130120079_CreateCommentTable.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202101130126016_LinkCommentsToTicket.resx">
+      <DependentUpon>202101130126016_LinkCommentsToTicket.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>

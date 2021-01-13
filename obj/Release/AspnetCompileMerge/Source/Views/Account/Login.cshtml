@@ -1,0 +1,75 @@
+﻿@model BugTracker.ViewModels.LoginViewModel
+
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=0, minimal-ui">
+    <title>@System.Configuration.ConfigurationManager.AppSettings["appName"]</title>
+    <link rel="shortcut icon" href="~/images/favicon.ico">
+    @Styles.Render("~/Content/css")
+</head>
+
+<body>
+
+    <!-- Begin page -->
+    <div class="wrapper-page">
+
+        <div class="card">
+            <div class="card-body">
+
+                <h3 class="text-center m-0">
+                    <a href="/dashboard" class="logo logo-admin"><img src="~/images/logo.png" height="30" alt="logo"></a>
+                </h3>
+
+                <div class="p-3">
+                    <h4 class="text-muted font-18 m-b-5 text-center">Welcome Back !</h4>
+                    <p class="text-muted text-center">Sign in to continue to Fonik.</p>
+                    @Html.ValidationSummary("", new{@class="text-danger text-center"})
+
+                    @using (Html.BeginForm("Login", "Account", new { ReturnUrl = ViewBag.ReturnUrl }, FormMethod.Post))
+                    {
+
+                        <div class="form-group">
+                            @Html.LabelFor(m => m.Email)
+                            @Html.TextBoxFor(m => m.Email, new {@class = "form-control", placeholder = "Enter User Name"})
+                        </div>
+
+                        <div class="form-group">
+                            @Html.LabelFor(m => m.Password)
+                            @Html.PasswordFor(m => m.Password, new {@class = "form-control", placeholder = "Enter Password"})
+                        </div>
+
+                        <div class="form-group row m-t-20">
+                            
+                            <div class="col-12 text-center">
+                                <button class="btn btn-primary w-md waves-effect waves-light" type="submit">Log In</button>
+                            </div>
+                        </div>
+                        @Html.AntiForgeryToken()
+                    }
+                        <div class="form-group m-t-10 mb-0 row">
+                            <div class="col-12 m-t-20">
+                                <a href="@Url.Action("RecoverPassword", "pages")" class="text-muted"><i class="mdi mdi-lock"></i> Forgot your password?</a>
+                            </div>
+                        </div>
+                </div>
+
+            </div>
+        </div>
+
+        <div class="m-t-40 text-center">
+            <p>Don't have an account ? <a href="@Url.Action("Register","Account")" class=" text-primary"> Signup Now </a> </p>
+            <p>© 2020 BugTracker. Crafted with <i class="mdi mdi-heart text-danger"></i> by Atya</p>
+        </div>
+
+    </div>
+
+    @Scripts.Render("~/bundles/jquery")
+</body>
+</html>

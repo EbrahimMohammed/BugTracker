@@ -1,0 +1,230 @@
+﻿@model BugTracker.Models.CreateProjectModel
+
+
+
+
+<div class="row mb-3">
+    <div class="col-lg-12">
+        <div class="card">
+            <div class="card-body">
+
+                <div class=" row bg-white p-0">
+                    <div class="col  p-0">
+                        <h5 class="page-title ml-3">
+                            <span class="page-title-icon mr-1">
+                                <i class="mdi mdi-library-plus"></i>
+                            </span> New Project
+                        </h5>
+                    </div>
+                    <div class="p-0 text-right mr-2">
+                        <ul class="breadcrumb bg-white float-right m-0 pl-0 pr-0">
+                            <li class="">@Html.ActionLink("Projects","Index","Project")</li>
+                            <li class=" active">New Project</li>
+                        </ul>
+                    </div>
+
+                </div>
+
+
+            </div>
+        </div>
+    </div>
+</div>
+
+<form>
+
+<div class="row">
+    <div class="col-lg-12">
+        <div class="card m-b-20">
+            <div class="card-body">
+
+                <h4 class="mt-0 header-title">Project details</h4>
+                    
+                <div class="row">
+                        <div class="col-sm-6">
+                            <div class="form-group">
+                                @Html.LabelFor(m => m.Name)
+                                @Html.TextBoxFor(m => m.Name,new{@class="form-control", id="projectName" , required="required"})
+                                @Html.ValidationMessageFor(m => m.Name, "",new{@class= "text-danger"})
+
+                            </div>
+                        </div>
+
+                        <div class="col-sm-6">
+                            <div class="form-group">
+                                @Html.LabelFor(m => m.Description)
+                                @Html.TextAreaFor(m => m.Description, new{@class="form-control", id="projectDescription" , rows=4})
+                            </div>
+                        </div>
+
+                    </div>
+
+
+
+
+            </div>
+        </div>
+    </div> <!-- end col -->
+
+</div>
+
+
+<div class="row">
+    <div class="col-lg-12">
+        <div class="card m-b-20">
+            <div class="card-body">
+
+                <h4 class="mt-0 header-title">Users</h4>
+
+                
+                <table id="usersTable" class="table table-hover" style="border-collapse: collapse; border-spacing: 0; width: 100%;">
+
+                    <thead>
+                    <tr>
+                        <th><input type="checkbox" id="selectAll" /> Select All</th>
+                        <th>Name</th>
+                        <th>Email</th>
+                        <th>Role</th>
+
+                    </tr>
+                    </thead>
+
+
+                </table>
+
+
+
+            </div>
+        </div>
+    </div> <!-- end col -->
+
+</div> <!-- end row -->
+
+
+<div class="row">
+<div class="col-lg-12">
+    <div class="form-group text-right">
+        <div>
+            <button id="btn-submit" type="submit" class="btn btn-primary waves-effect waves-light">
+                Create
+            </button>
+          
+        </div>
+    </div>
+</div>
+</div>
+
+</form>
+
+@section scripts {
+
+
+    <script>
+        $(document).ready(function() {
+            var table = $("#usersTable").DataTable({
+                ajax: {
+                    url: "/api/users/GetAssignedUsers",
+                    dataSrc: ""
+                },
+                columnDefs: [
+                    {
+                        targets: 0,
+                        orderable: false,
+                        searchable: false
+                    }
+                ],
+                select: {
+                    style: 'multi'
+                },
+                columns: [
+                    {
+                        data: "id",
+                        render: function(data, type, user) {
+
+                            return '<input id="aaa" type="checkbox" name="id" value="' + user.Id + '"/>';
+                        }
+
+                    },
+                    {
+                        data: "UserName"
+
+                    },
+                    {
+                        data: "Email"
+
+                    }, {
+                        data: "Role"
+
+                    }
+                ]
+            });
+
+            //handle select all behaviour
+            $('#selectAll').click(function(e) {
+                $(this).closest('table').find('td input:checkbox').prop('checked', this.checked);
+
+                if (this.checked) {
+                    table.rows().select();
+                } else {
+                    table.rows().deselect();
+                }
+
+            });
+
+            //tick checkbox on row click
+            $('#usersTable tbody').on('click',
+                'tr',
+                function(event) {
+                    //ensure click not coming from the checkbox
+                    if (!$(event.target).is('input')) {
+                        var checkbox = $(this).find('input');
+                        checkbox.prop('checked', !checkbox.is(':checked'));
+                    }
+                });
+
+
+            //handle submit event
+            $("form").submit(function(e) {
+
+                e.preventDefault();
+
+                var projectName = $("#projectName").val();
+                var description = $("#projectDescription").val();
+                var tableControl = $("#usersTable");
+                var usersArray = [];
+
+                $('input:checkbox:checked:not(#selectAll)', tableControl).each(function() {
+                    usersArray.push($(this).attr('value'));
+                });
+
+
+                $.ajax({
+                    type: "POST",
+                    url: "/api/project",
+                    data: { "Name": projectName, "Description": description, "UsersIds": usersArray },
+
+                    success: function(result) {
+                        Swal.fire({
+                            title: 'Project Created',
+                            icon: 'success'
+                        }).then(() => {
+                            window.location.href = "@Url.Action("Index", "Project")";
+                        });
+                    },
+                    error: function(result) {
+                        Swal.fire({
+                            title: 'Unable to create the project',
+                            icon: 'error'
+                        }).then(() => {
+                            location.reload();
+                        });
+                    }
+                });
+
+            });
+
+
+        });
+    </script>
+}
+

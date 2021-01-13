@@ -1,0 +1,178 @@
+﻿@model BugTracker.Core.Domain.Project
+
+
+
+
+
+<div class="row">
+    <div class="col-lg-12">
+        <div class="card m-b-20">
+            <div class="card-body">
+
+                <h4 class="mt-0 header-title">Project details</h4>
+
+                <div class="row">
+                    <div class="col-sm-6">
+                        <div class="form-group">
+                            @Html.LabelFor(m => m.Name)
+                            <p> @Model.Name</p>
+                            @Html.ValidationMessageFor(m => m.Name, "", new { @class = "text-danger" })
+
+                        </div>
+                    </div>
+
+                    <div class="col-sm-6">
+                        <div class="form-group">
+                            @Html.LabelFor(m => m.Description)
+                            <p>@Model.Description</p>
+                        </div>
+                    </div>
+
+                </div>
+
+
+
+
+            </div>
+        </div>
+    </div> <!-- end col -->
+
+</div>
+
+<div class="row mb-2">
+    <div class="col-md-12 text-right">
+
+
+        @Html.ActionLink("New ticket", "Create", "Ticket", new { id = Model.Id }, new { @class = "btn btn-create" })
+
+    </div>
+
+</div>
+
+<div class="row">
+    <div class="col-md-12">
+        <div class="card m-b-20">
+            <div class="card-body">
+
+                <h4 class="mt-0 header-title">Tickets</h4>
+
+
+                <table id="ticketsTable" class="table table-hover" style="border-collapse: collapse; border-spacing: 0; width: 100%;">
+
+                    <thead>
+                        <tr>
+                            <th>Title</th>
+                            <th>Type</th>
+                            <th>Priority</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+
+
+                </table>
+
+
+
+            </div>
+        </div>
+    </div> <!-- end col -->
+
+</div> <!-- end row -->
+<div class="row">
+    <div class="col-md-12">
+        <div class="card m-b-20">
+            <div class="card-body">
+
+                <h4 class="mt-0 header-title">Team</h4>
+
+
+                <table id="teamTable" class="table table-hover" style="border-collapse: collapse; border-spacing: 0; width: 100%;">
+
+                    <thead>
+                        <tr>
+                            <th>Name</th>
+                            <th>Email</th>
+                            <th>Role</th>
+                        </tr>
+                    </thead>
+
+
+                </table>
+
+
+
+            </div>
+        </div>
+    </div> <!-- end col -->
+</div>
+
+
+
+@section scripts {
+
+
+    <div>
+        <script>
+    $(document).ready(function() {
+        var developersTable = $("#ticketsTable").DataTable({
+            ajax: {
+                url: "/api/tickets/GetProjectTickets",
+                data: { id: @Model.Id },
+                dataSrc: ""
+            },
+            pageLength: 5,
+            lengthMenu: [[5, 10, 20, -1], [5, 10, 20, "All"]],
+            columns: [
+                {
+                    data: "Id",
+                    render: function(data, type, ticket) {
+
+                        return '<a href=/ticket/details/' + data + '>'+ ticket.Title +'</a>';
+                    }
+
+                },
+                {
+                    data: "TicketType.Type"
+
+                },
+                {
+                    data: "Priority.Name"
+
+                },
+                {
+                    data: "Status.Name"
+
+                }
+            ]
+        });
+
+
+        var currentDevelopers = $("#teamTable").DataTable({
+            ajax: {
+                url: "/api/users/getProjectUsers",
+                data: { id: @Model.Id },
+                dataSrc: ""
+            },
+            pageLength: 5,
+            lengthMenu: [[5, 10, 20, -1], [5, 10, 20, "All"]],
+            columns: [
+                {
+                    data: "UserName"
+
+                },
+                {
+                    data: "Email"
+                },
+                {
+                    data: "Id"
+
+                }
+            ]
+        });
+
+
+    });
+        </script>
+    </div>
+    }
+

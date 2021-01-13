@@ -40,8 +40,7 @@ namespace BugTracker
                     "~/plugins/toaster/toaster.js",
                     "~/plugisn/parsleyjs/parsley.min.js"
 
-
-                   ));
+                ));
 
 
              bundles.Add(new ScriptBundle("~/bundles/swal").Include(

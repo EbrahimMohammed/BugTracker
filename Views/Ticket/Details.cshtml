@@ -5,20 +5,17 @@
 
 @model BugTracker.Models.UpdateTicketViewModel
 
+<div class="row">
 
-@using (Html.BeginForm("Update", "Ticket", FormMethod.Post))
-{
-
-    @Html.HiddenFor(m => m.Ticket.ProjectId)
-    <div class="row col-md-9">
-        <div class="col-lg-12">
-            <div class="card m-b-20">
-                <div class="card-body">
-
+    <div class="col-md-6">
+        <div class="card m-b-20">
+            <div class="card-body">
+                @using (Html.BeginForm("Update", "Ticket", FormMethod.Post))
+                {
                     <h4 class="mt-0 header-title">Project details</h4>
 
                     <div class="row mb-3">
-                        <div class="col-sm-6">
+                        <div class="col-sm-12">
                             <div class="form-group">
                                 @Html.LabelFor(m => m.Ticket.Title)
                                 @Html.TextBoxFor(m => m.Ticket.Title, new { @class = "form-control", id = "projectName", required = "required" })
@@ -26,27 +23,30 @@
 
                             </div>
                         </div>
+                    </div>
+                    <div class="row mb-3">
 
-                        <div class="col-sm-6">
+                        <div class="col-sm-12">
+
                             <div class="form-group">
                                 @Html.LabelFor(m => m.Ticket.Description)
-                                @Html.TextAreaFor(m => m.Ticket.Description, new { @class = "form-control", id = "projectDescription", rows = 4 })
+                                @Html.TextAreaFor(m => m.Ticket.Description, new {@class = "form-control", id = "projectDescription", rows = 3, maxlength = "255"})
                             </div>
                         </div>
-
                     </div>
 
                     <div class="row mb-3">
 
                         <div class="form-group col-md-6">
-                            @Html.DropDownListFor(m => m.Ticket.AssignedDeveloperId, new SelectList(Model.ProjectUsers, "Id", "UserName"), "Select a developer", new { @class = "form-control select2" })
+                            @Html.LabelFor(m => m.ProjectUsers)
+                            @Html.DropDownListFor(m => m.Ticket.AssignedDeveloperId, new SelectList(Model.ProjectUsers, "Id", "UserName"), "Select a developer", new {@class = "form-control select2"})
 
                         </div>
                         <div class="form-group col-md-6">
 
-                            @*@Html.EditorFor(m => m.Ticket.DudeDate, new { htmlAttributes = new { @class = "form-control", placeholder = "Employee Date Of Birth" } })*@
                             <div class="input-group">
-                                @Html.TextBoxFor(m => m.Ticket.DueDate, new { @class = "form-control", placeholder = "dd/mm/yyyy", id = "dp", @readonly = "readonly" })
+                                @Html.LabelFor(m => m.Ticket.DueDate)<br/>
+                                @Html.TextBoxFor(m => m.Ticket.DueDate, new {@class = "form-control", placeholder = "dd/mm/yyyy", id = "dp", @readonly = "readonly"})
                                 <div class="input-group-append">
                                     <span class="input-group-text"><i class="mdi mdi-calendar"></i></span>
                                 </div>
@@ -59,61 +59,104 @@
                     <div class="row">
 
                         <div class="form-group col-md-6">
-                            @Html.DropDownListFor(m => m.Ticket.PriorityId, new SelectList(Model.Priorities, "Id", "Name"), "Priority", new { @class = "form-control noSearchSelect" })
+                            @Html.LabelFor(m => m.Priorities)
+                            @Html.DropDownListFor(m => m.Ticket.PriorityId, new SelectList(Model.Priorities, "Id", "Name"), "Priority", new {@class = "form-control noSearchSelect"})
 
                         </div>
 
                         <div class="form-group col-md-6">
-                            @Html.DropDownListFor(m => m.Ticket.TicketTypeId, new SelectList(Model.TicketTypes, "Id", "Type"), "Type", new { @class = "form-control noSearchSelect" })
+                            @Html.LabelFor(m => m.TicketTypes)
+
+                            @Html.DropDownListFor(m => m.Ticket.TicketTypeId, new SelectList(Model.TicketTypes, "Id", "Type"), "Type", new {@class = "form-control noSearchSelect"})
 
                         </div>
 
                     </div>
-                    
-                    
+
+
                     <div class="row">
 
                         <div class="form-group col-md-6">
-                            @Html.DropDownListFor(m => m.Ticket.StatusId, new SelectList(Model.TicketStatus, "Id", "Name"), "Priority", new { @class = "form-control noSearchSelect" })
+                            @Html.LabelFor(m => m.TicketStatus)<br/>
+                            @Html.DropDownListFor(m => m.Ticket.StatusId, new SelectList(Model.TicketStatus, "Id", "Name"), "Priority", new {@class = "form-control noSearchSelect"})
 
                         </div>
 
                     </div>
 
-                </div>
-            </div>
-        </div> <!-- end col -->
 
-    </div>
+                    <div class="form-group text-right">
+                        <div>
+                            <button id="btn-submit" type="submit" class="btn btn-primary waves-effect waves-light">
+                                Update
+                            </button>
 
+                        </div>
+                    </div>
 
-    <div class="row">
-        <div class="col-md-9">
-            <div class="form-group text-right mr-4 pr-3">
-                <div>
-                    <button id="btn-submit" type="submit" class="btn btn-primary waves-effect waves-light">
-                        Update
-                    </button>
+                    @Html.HiddenFor(m => m.Ticket.ProjectId)
+                    @Html.HiddenFor(m => m.Ticket.Id)
+                    @Html.HiddenFor(m => m.Ticket.PriorityId)
 
-                </div>
+                }
+
             </div>
         </div>
+    </div> 
+
+
+
+
+    <div class="col-md-6">
+        <div class="card m-b-20 card-block">
+            <div class="card-body">
+
+
+                <h4 class="mt-0 header-title">Comments</h4>
+                <form id="comment-form">
+                <div class="form-group row">
+                    <div class="col-sm-10">
+                        @Html.TextBoxFor(m => m.CommentsModel.Comment,new {@class="form-control", id="comment-text-input", required="required"})
+                        @Html.ValidationMessageFor(m => m.CommentsModel.Comment, "", new{@class="text-danger"})
+                    </div>
+                    <div class="col-sm-2 pl-1">
+                        <button  type="submit" class="btn btn-primary waves-effect waves-light">Add</button>
+                    </div>
+                </div>              
+                </form>
+
+                <table id="comments" class="table table-hover" style="border-collapse: collapse; border-spacing: 0; width: 100%;">
+
+                    <thead>
+                        <tr>
+                            <th style="column-width: 70px;" >Comment</th>
+                            <th>Commenter</th>
+
+                        </tr>
+                    </thead>
+
+
+                </table>
+            </div>
+        </div>
+
     </div>
-    
+</div>
 
-    @Html.HiddenFor(m => m.Ticket.Id)
-    @Html.HiddenFor(m => m.Ticket.PriorityId)
 
-}
+
+@Html.Partial("_FileUpload", Model.FileModel)
+
 
 
 
 @section scripts {
 
+    <script src="~/plugins/bootstrap-filestyle/js/bootstrap-filestyle.min.js"></script>
 
 
     <script>
-        $(document).ready(function () {
+        $(document).ready(function() {
 
 
             //handle submit event
@@ -127,6 +170,85 @@
                 todayHighlight: true,
                 dateFormat: "yy-mm-dd"
             });
+
+            var attachementsTable = $("#attachments").DataTable({
+                ajax: {
+                    url: "/api/tickets/GetTicketFiles/",
+                    data: { id: @Model.Ticket.Id },
+                    dataSrc: ""
+                },
+
+                columns: [
+                    {
+                        data: "Description"
+
+                    },
+                    {
+                        data: "Id"
+                    },
+                    {
+                        data: "Id",
+                        render: function(data, type, ticket) {
+
+                            return '<a href=/ticket/downloadfile/' + data + '>' + ' <i class="dripicons-download"></i>' + '</a>';
+                        }
+                    }
+                ]
+            });
+
+
+            var commentsTable = $("#comments").DataTable({
+                bLengthChange: false,
+                bInfo: false,
+                pageLength: 6,
+                fixedColumns: true,
+                bFilter: false,
+                columnDefs: [
+                    { width: "70%", targets: 0 }
+                ],
+                ajax: {
+                    url: "/api/comments/",
+                    data: { id: @Model.Ticket.Id },
+                    dataSrc: "",
+
+                },
+
+                columns: [
+                    {
+                        data: "Comment"
+
+                    },
+                    {
+                        data: "CreatedByTable.UserName"
+                    }
+                ]
+            });
+
+
+            $("#comment-form").submit(function (e) {
+
+                e.preventDefault();
+
+                var comment = $("#comment-text-input");
+
+                $.ajax({
+                    type: "put",
+                    url: "/api/comments/AddComment",
+                    data: { "TicketId": @Model.Ticket.Id, "Comment": comment.val() },
+
+                    success: function(result) {
+                        comment.val("");
+                        commentsTable.ajax.reload();
+                    },
+                    error: function(result) {
+                    }
+                });
+
+
+            });
+
         });
+
+
     </script>
 }
