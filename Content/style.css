@@ -2746,19 +2746,11 @@ table.focus-on tbody tr.focused td {
 }
 
 .morris-hover.morris-default-style .morris-hover-point {
-  font-weight: 500;
-  font-size: 13px;
-  color: #2a3142 !important;
-  font-family: "Poppins", sans-serif;
+
 }
 
 .morris-hover.morris-default-style .morris-hover-row-label {
-  background-color: #2a3142;
-  color: #ffffff;
-  padding: 4px;
-  border-radius: 5px 5px 0 0;
-  margin: -10px -12px 10px;
-  font-family: "Poppins", sans-serif;
+
 }
 
 /* Flot chart */

@@ -3,8 +3,8 @@
 @using (Html.BeginForm("FileUpload", "Ticket", FormMethod.Post, new { enctype = "multipart/form-data" }))
 {
 
-    <div class="col-md-7">
-
+    <div class="row">
+        <div class="col-md-12">
         <div class="card m-b-20">
             <div class="card-body">
 
@@ -38,12 +38,12 @@
                 <table id="attachments" class="table table-hover" style="border-collapse: collapse; border-spacing: 0; width: 100%;">
 
                     <thead>
-                        <tr>
-                            <th>Description</th>
-                            <th>Uploader</th>
-                            <th>Download</th>
+                    <tr>
+                        <th>Description</th>
+                        <th>Uploader</th>
+                        <th>Download</th>
 
-                        </tr>
+                    </tr>
                     </thead>
 
 
@@ -53,6 +53,7 @@
 
 
 
+            </div>
             </div>
         </div>
 

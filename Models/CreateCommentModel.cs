@@ -14,4 +14,7 @@ namespace BugTracker.Models
         public string Comment { get; set; }
 
     }
+
+
+
 }

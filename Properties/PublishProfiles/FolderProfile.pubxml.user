@@ -13,14 +13,20 @@ https://go.microsoft.com/fwlink/?LinkID=208121.
     <File Include="bin/Antlr3.Runtime.pdb">
       <publishTime>09/10/2013 16:29:20</publishTime>
     </File>
+    <File Include="bin/App_global.asax.compiled">
+      <publishTime>01/15/2021 11:26:03</publishTime>
+    </File>
+    <File Include="bin/App_global.asax.dll">
+      <publishTime>01/15/2021 11:26:02</publishTime>
+    </File>
     <File Include="bin/AutoMapper.dll">
       <publishTime>10/22/2015 01:39:56</publishTime>
     </File>
     <File Include="bin/BugTracker.dll">
-      <publishTime>01/12/2021 10:11:57</publishTime>
+      <publishTime>01/15/2021 11:24:51</publishTime>
     </File>
     <File Include="bin/BugTracker.pdb">
-      <publishTime>01/12/2021 10:11:57</publishTime>
+      <publishTime>01/15/2021 11:24:51</publishTime>
     </File>
     <File Include="bin/EntityFramework.dll">
       <publishTime>04/16/2020 20:38:42</publishTime>
@@ -443,7 +449,7 @@ https://go.microsoft.com/fwlink/?LinkID=208121.
       <publishTime>01/08/2021 11:07:39</publishTime>
     </File>
     <File Include="Content/style.css">
-      <publishTime>01/07/2021 19:12:34</publishTime>
+      <publishTime>01/14/2021 20:51:22</publishTime>
     </File>
     <File Include="Content/style.css.map">
       <publishTime>12/15/2020 04:08:48</publishTime>
@@ -1174,8 +1180,17 @@ https://go.microsoft.com/fwlink/?LinkID=208121.
     <File Include="plugins/datatables/vfs_fonts.js">
       <publishTime>12/15/2020 04:13:01</publishTime>
     </File>
+    <File Include="plugins/morris/morris.css">
+      <publishTime>01/31/2019 21:54:00</publishTime>
+    </File>
+    <File Include="plugins/morris/morris.min.js">
+      <publishTime>01/31/2019 21:54:00</publishTime>
+    </File>
     <File Include="plugins/parsleyjs/parsley.min.js">
       <publishTime>01/08/2021 20:15:19</publishTime>
+    </File>
+    <File Include="plugins/raphael/raphael-min.js">
+      <publishTime>01/31/2019 21:54:00</publishTime>
     </File>
     <File Include="plugins/select2/css/select2.css">
       <publishTime>01/31/2019 21:54:00</publishTime>
@@ -1360,6 +1375,9 @@ https://go.microsoft.com/fwlink/?LinkID=208121.
     <File Include="plugins/x-editable/js/bootstrap-editable.min.js">
       <publishTime>01/01/2021 01:54:41</publishTime>
     </File>
+    <File Include="PrecompiledApp.config">
+      <publishTime>01/15/2021 11:25:54</publishTime>
+    </File>
     <File Include="Scripts/app.js">
       <publishTime>12/15/2020 04:13:34</publishTime>
     </File>
@@ -1451,7 +1469,7 @@ https://go.microsoft.com/fwlink/?LinkID=208121.
       <publishTime>12/15/2020 03:56:44</publishTime>
     </File>
     <File Include="Views/Account/Login.cshtml">
-      <publishTime>12/25/2020 19:14:09</publishTime>
+      <publishTime>01/15/2021 00:28:04</publishTime>
     </File>
     <File Include="Views/Account/Register.cshtml">
       <publishTime>12/16/2020 22:54:51</publishTime>
@@ -1472,7 +1490,7 @@ https://go.microsoft.com/fwlink/?LinkID=208121.
       <publishTime>12/26/2020 22:56:01</publishTime>
     </File>
     <File Include="Views/Dashboard/Index.cshtml">
-      <publishTime>12/25/2020 19:00:58</publishTime>
+      <publishTime>01/15/2021 00:29:14</publishTime>
     </File>
     <File Include="Views/Home/About.cshtml">
       <publishTime>12/15/2020 03:56:32</publishTime>
@@ -1508,13 +1526,13 @@ https://go.microsoft.com/fwlink/?LinkID=208121.
       <publishTime>01/07/2021 15:35:17</publishTime>
     </File>
     <File Include="Views/Project/Details.cshtml">
-      <publishTime>01/04/2021 00:42:18</publishTime>
+      <publishTime>01/15/2021 10:56:36</publishTime>
     </File>
     <File Include="Views/Project/Edit.cshtml">
       <publishTime>12/30/2020 09:27:08</publishTime>
     </File>
     <File Include="Views/Project/Index.cshtml">
-      <publishTime>01/08/2021 11:12:30</publishTime>
+      <publishTime>01/12/2021 22:30:21</publishTime>
     </File>
     <File Include="Views/Shared/Error.cshtml">
       <publishTime>12/15/2020 03:56:44</publishTime>
@@ -1526,10 +1544,10 @@ https://go.microsoft.com/fwlink/?LinkID=208121.
       <publishTime>12/20/2020 04:19:43</publishTime>
     </File>
     <File Include="Views/Shared/_Footer.cshtml">
-      <publishTime>12/25/2020 19:11:14</publishTime>
+      <publishTime>01/15/2021 00:30:07</publishTime>
     </File>
     <File Include="Views/Shared/_Header.cshtml">
-      <publishTime>01/07/2021 09:50:02</publishTime>
+      <publishTime>01/15/2021 01:25:44</publishTime>
     </File>
     <File Include="Views/Shared/_Layout.cshtml">
       <publishTime>01/08/2021 11:03:21</publishTime>
@@ -1541,10 +1559,13 @@ https://go.microsoft.com/fwlink/?LinkID=208121.
       <publishTime>01/02/2021 03:11:15</publishTime>
     </File>
     <File Include="Views/Ticket/Details.cshtml">
-      <publishTime>01/10/2021 16:08:13</publishTime>
+      <publishTime>01/15/2021 11:00:06</publishTime>
+    </File>
+    <File Include="Views/Ticket/Index.cshtml">
+      <publishTime>01/15/2021 01:14:18</publishTime>
     </File>
     <File Include="Views/Ticket/_FileUpload.cshtml">
-      <publishTime>01/10/2021 15:59:07</publishTime>
+      <publishTime>01/15/2021 10:25:47</publishTime>
     </File>
     <File Include="Views/Web.config">
       <publishTime>12/15/2020 03:56:32</publishTime>
@@ -1553,7 +1574,7 @@ https://go.microsoft.com/fwlink/?LinkID=208121.
       <publishTime>12/15/2020 03:56:32</publishTime>
     </File>
     <File Include="Web.config">
-      <publishTime>01/12/2021 20:10:48</publishTime>
+      <publishTime>01/15/2021 11:24:52</publishTime>
     </File>
   </ItemGroup>
 </Project>

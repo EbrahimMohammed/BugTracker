@@ -1,1 +1,215 @@
-﻿
+﻿@using BugTracker.Core.Domain
+@using BugTracker.Models
+@using Roles = BugTracker.Models.Roles
+@model BugTracker.Models.DashboardViewModel
+
+
+@section styles{
+
+    @Styles.Render("~/plugins/chartscss")
+
+}
+
+<div class="row">
+    <div class="col-xl-3 col-md-6">
+        <div class="card mini-stat bg-primary">
+            <div class="card-body mini-stat-img">
+                <div class="mini-stat-icon">
+                    <i class="fas fa-cubes float-right"></i>
+                </div>
+                <div class="text-white">
+                    <h6 class="text-uppercase mb-3">TOTAL Projects</h6>
+                    <h4 class="mb-4">@Model.TotalProjects</h4>
+                    <span class="ml-2">Total projects</span>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-xl-3 col-md-6">
+        <div class="card mini-stat bg-primary">
+            <div class="card-body mini-stat-img">
+                <div class="mini-stat-icon">
+                    <i class="mdi mdi-checkbox-multiple-blank-outline float-right"></i>
+                </div>
+                <div class="text-white">
+                    <h6 class="text-uppercase mb-3">Active tickets</h6>
+                    <h4 class="mb-4">@Model.ActiveTickets</h4>
+                    <span class="ml-2">Total active tickets</span>
+
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-xl-3 col-md-6">
+        <div class="card mini-stat bg-primary">
+            <div class="card-body mini-stat-img">
+                <div class="mini-stat-icon">
+
+                    <i class="mdi mdi-checkbox-multiple-marked-outline float-right"></i>
+                </div>
+                <div class="text-white">
+                    <h6 class="text-uppercase mb-3">Closed tickets</h6>
+                    <h4 class="mb-4">@Model.ClosedTickets</h4>
+                    <span class="ml-2">Total closed tickets</span>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-xl-3 col-md-6">
+        <div class="card mini-stat bg-primary">
+            <div class="card-body mini-stat-img">
+                <div class="mini-stat-icon">
+                    <i class="fas fa-user float-right"></i>
+                </div>
+                <div class="text-white">
+                    <h6 class="text-uppercase mb-3">TOTAL<br />USERS</h6>
+                    <h4 class="mb-4">@Model.TotalUsers</h4>
+                    <span class="ml-2">Total registered users</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+
+    <div class="col-lg-6">
+        <div class="card m-b-30">
+            <div class="card-body">
+
+                <h4 class="mt-0 header-title">Tickets by type</h4>
+
+
+                <div id="tickets-by-type" class="morris-chart-height"></div>
+
+            </div>
+        </div>
+    </div> <!-- end col -->
+
+    <div class="col-lg-6">
+        <div class="card m-b-30">
+            <div class="card-body">
+
+                <h4 class="mt-0 header-title">Tickets by priority</h4>
+
+
+                <div id="tickets-by-priority" class="morris-chart-height"></div>
+
+            </div>
+        </div>
+    </div> <!-- end col -->
+</div>
+
+
+<div class="row">
+    <div class="col-lg-6">
+        <div class="card m-b-30">
+            <div class="card-body">
+
+                <h4 class="mt-0 header-title">Tickets by status</h4>
+
+                <div id="tickets-by-status" class="morris-chart-height"></div>
+
+
+            </div>
+
+
+        </div>
+
+    </div>
+    
+    
+    <div class="col-lg-6">
+    <div class="card m-b-30">
+        <div class="card-body">
+
+            <h4 class="mt-0 header-title">Users</h4>
+
+            <div id="users-chart" class="morris-chart-height"></div>
+
+
+        </div>
+
+
+    </div>
+
+</div>
+</div>
+
+@section scripts {
+
+    @Scripts.Render("~/bundles/chartsjs")
+
+
+<script>
+
+
+        new Morris.Donut({
+            element: 'tickets-by-type',
+            data: [
+                { label: "@TicketTypes.Bugs", value: @Model.TicketByTypeModel.Bugs },
+                { label: "@TicketTypes.ChangeRequest", value: @Model.TicketByTypeModel.ChangeRequests },
+                { label: "@TicketTypes.NewFunctionality", value: @Model.TicketByTypeModel.NewFunctionalities },
+            ],
+            resize: true,
+            colors: ['#ec536c', '#7a6fbe', '#28bbe3']
+        });
+
+
+        new Morris.Donut({
+            element: 'tickets-by-priority',
+            data: [
+                { label: "@Priorities.High", value: @Model.TicketByPriorityModel.High },
+                { label: "@Priorities.Medium", value: @Model.TicketByPriorityModel.Medium },
+                { label: "@Priorities.Low", value: @Model.TicketByPriorityModel.Low },
+            ],
+            resize: true,
+            colors: ['#ec536c', '#7a6fbe', '#28bbe3']
+        });
+
+
+
+
+        var chart = c3.generate({
+            bindto: '#tickets-by-status',
+            data: {
+                columns: [
+                    ['@StatusName.Pending', @Model.TicketByStatusModel.Pending],
+                    ['@StatusName.Assigned', @Model.TicketByStatusModel.Assigned],
+                    ['@StatusName.Fixed', @Model.TicketByStatusModel.Fixed],
+                    ['@StatusName.Tested', @Model.TicketByStatusModel.Tested],
+                    ['@StatusName.Closed', @Model.TicketByStatusModel.Closed]
+                ],
+                type: 'pie'
+            },
+            color: {
+                pattern: ['#f0f1f4', '#7a6fbe', '#28bbe3', '#2f8ee0', '#ec536c']
+            }
+        });
+
+
+        new Morris.Bar({
+            element: 'users-chart',
+            data: [
+            { role: '@Roles.CanManageUsers', roleCount: @Model.UserRolesModel.AdminsCount },
+            { role: '@Roles.CanManageProjects', roleCount: @Model.UserRolesModel.ProjectManagers },
+            { role: '@Roles.CanChangeFixedStated', roleCount: @Model.UserRolesModel.DevelopersCount },
+            { role: '@Roles.CanChangeTestedState', roleCount: @Model.UserRolesModel.TestersCount }
+            ],
+            xkey: 'role',
+            ykeys: ['roleCount'],
+            hideHover: 'auto',
+            barSizeRatio: 0.4,
+            resize: true, //defaulted to true
+            gridLineColor: '#eeeeee',
+            barColors: ['#7a6fbe'],
+            labels: ['users in role'],
+            xLabelMargin: 10
+
+
+        });
+
+
+</script>
+
+}

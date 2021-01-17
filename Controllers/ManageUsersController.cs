@@ -33,35 +33,5 @@ namespace BugTracker.Controllers
         }
 
 
-
-        [HttpPost]
-        public ActionResult AssignRole(AssignRoleModel model)
-        {
-
-
-            //var userStore = new UserStore<IdentityUser>();
-            //var userManager = new UserManager<IdentityUser>(userStore);
-            //var roleStore = new RoleStore<IdentityRole>();
-            //var roleManager = new RoleManager<IdentityRole>(roleStore);
-
-
-
-            ////get old role of user if it exists
-            //var oldRole = userManager.GetRoles(model.UserId).FirstOrDefault();
-
-
-            //var newRole = roleManager.Roles.Single(r => r.Id == model.RoleId);
-
-
-            ////remove old role
-            //if (oldRole != null)
-            //    userManager.RemoveFromRole(model.UserId, oldRole);
-
-            //// add new role
-            //userManager.AddToRole(model.UserId, newRole.Name);
-
-            return Json(new { status = "Success", message = "Success" });
-
-        }
     }
 }

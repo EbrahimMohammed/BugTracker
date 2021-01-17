@@ -1,4 +1,5 @@
-﻿namespace BugTracker.Migrations
+﻿
+namespace BugTracker.Migrations
 {
     using System;
     using System.Data.Entity.Migrations;

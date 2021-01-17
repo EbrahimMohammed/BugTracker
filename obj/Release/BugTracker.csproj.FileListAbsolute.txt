@@ -150,3 +150,5 @@ D:\Bug tracker - current\BugTracker\obj\Release\BugTracker.csproj.CoreCompileInp
 D:\Bug tracker - current\BugTracker\obj\Release\BugTracker.csproj.CopyComplete
 D:\Bug tracker - current\BugTracker\obj\Release\BugTracker.dll
 D:\Bug tracker - current\BugTracker\obj\Release\BugTracker.pdb
+D:\Bug tracker - current\BugTracker\obj\Release\BugTracker.Migrations.CreateCommentTable.resources
+D:\Bug tracker - current\BugTracker\obj\Release\BugTracker.Migrations.LinkCommentsToTicket.resources

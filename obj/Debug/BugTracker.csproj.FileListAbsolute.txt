@@ -559,3 +559,4 @@ D:\Bug tracker - current\BugTracker\obj\Debug\BugTracker.Migrations.AddNamePrope
 D:\Bug tracker - current\BugTracker\obj\Debug\BugTracker.Migrations.MapTicketToFile.resources
 D:\Bug tracker - current\BugTracker\obj\Debug\BugTracker.Migrations.CreateCommentTable.resources
 D:\Bug tracker - current\BugTracker\obj\Debug\BugTracker.Migrations.LinkCommentsToTicket.resources
+D:\Bug tracker - current\BugTracker\obj\Debug\BugTracker.Migrations.PopulateInProgressTicketStatus.resources

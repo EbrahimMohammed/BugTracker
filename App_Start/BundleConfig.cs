@@ -19,6 +19,15 @@ namespace BugTracker
 
             bundles.Add(new ScriptBundle("~/bundles/jqueryval").Include(
                 "~/Scripts/jquery.validate*"));
+            
+            
+            bundles.Add(new ScriptBundle("~/bundles/chartsjs").Include(
+                "~/plugins/morris/morris.min.js",
+                "~/plugins/c3/c3.min.js",
+                "~/plugins/d3/d3.min.js",
+                "~/plugins/raphael/raphael-min.js"));
+
+
 
 
                 bundles.Add(new ScriptBundle("~/bundles/pluginsjs").Include(
@@ -72,7 +81,12 @@ namespace BugTracker
                 "~/Content/style.css"));
 
             bundles.Add(new StyleBundle("~/plugins/swal").Include(
-                "~/plugins/sweet-alert2/sweetalert2.min.css"));
+                "~/plugins/sweet-alert2/sweetalert2.min.css")); 
+            
+            
+            bundles.Add(new StyleBundle("~/plugins/chartscss").Include(
+                "~/plugins/morris/morris.css",
+                "~/plugins/c3/c3.min.css"));
 
             BundleTable.Bundles.Add(new StyleBundle("~/Content/fontawesome").Include(
                 "~/Content/fontawesome/font-awesome.css"));

@@ -22,18 +22,27 @@ namespace BugTracker.Controllers
         // GET: Project
         public ActionResult Index()
         {
-            return View();
+
+            if (User.IsInRole(Roles.CanManageProjects))
+            {
+                return View("ProjectManagerView");
+            }
+
+
+            return View("UserView");
         }
 
+
+        [Authorize(Roles = Roles.CanManageProjects)]
         public ActionResult Create()
         {
             return View();
         }
 
-
-        public ActionResult Edit(int Id)
+        [Authorize(Roles = Roles.CanManageProjects)]
+        public ActionResult Edit(int id)
         {
-            var project = _context.Projects.Include(p => p.Developers).SingleOrDefault(c => c.Id == Id);
+            var project = _context.Projects.Include(p => p.Developers).SingleOrDefault(c => c.Id == id);
 
             if (project == null)
                 return HttpNotFound();

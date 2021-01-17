@@ -3,7 +3,6 @@
 
 
 
-
 <div class="row">
     <div class="col-lg-12">
         <div class="card m-b-20">
@@ -111,8 +110,8 @@
 @section scripts {
 
 
-    <div>
-        <script>
+
+    <script>
     $(document).ready(function() {
         var developersTable = $("#ticketsTable").DataTable({
             ajax: {
@@ -143,6 +142,8 @@
                     data: "Status.Name"
 
                 }
+
+
             ]
         });
 
@@ -172,7 +173,7 @@
 
 
     });
-        </script>
-    </div>
-    }
+    </script>
+
+}
 

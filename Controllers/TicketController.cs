@@ -8,9 +8,12 @@ using BugTracker.Models;
 using BugTracker.Persistance;
 using System.Data.Entity;
 using System.IO;
+using System.Web.Http;
 using BugTracker.Core.Domain;
 using BugTracker.Enums;
 using Microsoft.Ajax.Utilities;
+using Microsoft.AspNet.Identity;
+using Microsoft.AspNet.Identity.EntityFramework;
 using File = BugTracker.Core.Domain.File;
 
 namespace BugTracker.Controllers
@@ -19,6 +22,11 @@ namespace BugTracker.Controllers
     {
         private ApplicationDbContext _context;
         private string _uploadFolder;
+        private static UserStore<IdentityUser> _userStore;
+        private static UserManager<IdentityUser> _userManager;
+        private static RoleStore<IdentityRole> _roleStore;
+        private static RoleManager<IdentityRole> _roleManager;
+
 
 
 
@@ -26,10 +34,23 @@ namespace BugTracker.Controllers
         {
             _context = new ApplicationDbContext();
             _uploadFolder = ConfigurationManager.AppSettings["UploadFolder"];
+            _userStore = new UserStore<IdentityUser>();
+            _userManager = new UserManager<IdentityUser>(_userStore);
+            _roleStore = new RoleStore<IdentityRole>();
+            _roleManager = new RoleManager<IdentityRole>(_roleStore);
         }
 
 
-        
+        public ActionResult Index()
+        {
+
+          
+
+            return View();
+        }
+
+
+
         public ActionResult Create(int id)
         {
             var ticket = new Ticket
@@ -62,7 +83,7 @@ namespace BugTracker.Controllers
         }
 
 
-        [HttpPost]
+        [System.Web.Mvc.HttpPost]
         public ActionResult Create(CreateTicketViewModel model)
         {
             if (!ModelState.IsValid)
@@ -108,13 +129,86 @@ namespace BugTracker.Controllers
 
         public ActionResult Details(int id)
         {
+            var role = _userManager.GetRoles(User.Identity.GetUserId()).FirstOrDefault();
 
+            var model = PopulateUpdateTicketViewModel(id , role);
+
+
+            if (role == Roles.CanManageProjects)
+                return View("DetailsManagerView", model);
+            
+            if (role == Roles.CanManageUsers)
+                return View("DetailsAdminView", model);
+
+
+
+            return View("DetailsUserView", model);
+
+
+
+        }
+
+
+     
+
+
+
+        public UpdateTicketViewModel PopulateUpdateTicketViewModel(int ticketId, string role)
+        {
+
+            var model = new UpdateTicketViewModel();
+
+            if (role != null)
+            {
+                switch (role)
+                {
+                    case Roles.CanManageUsers:
+                        model = PopulateModelForAdmin(ticketId);
+                        break;
+
+                    case Roles.CanManageProjects:
+                        model = PopulateModelForProjectManager(ticketId);
+                        break;
+
+                    case Roles.CanChangeFixedStated:
+                        model = PopulateModelForUsers(ticketId);
+                        break; 
+                    
+                    case Roles.CanChangeTestedState:
+                        model = PopulateModelForUsers(ticketId);
+                        break;
+                }
+
+            }
+            return model;
+        }
+
+        public UpdateTicketViewModel PopulateModelForAdmin(int ticketId)
+        {
             var ticket = _context
                 .Tickets
-                .Single(t => t.Id == id);
+                .Include(t => t.AssignedDeveloper)
+                .Include(t => t.TicketType)
+                .Include(t => t.Priority)
+                .Include(t => t.Status)
+                .Single(t => t.Id == ticketId);
 
-           
+            var model = new UpdateTicketViewModel()
+            {
+                Ticket = ticket,
 
+                FileModel = new FileModel { TicketId = ticket.Id }
+            };
+
+            return model;
+
+        }
+
+        public UpdateTicketViewModel PopulateModelForProjectManager(int ticketId)
+        {
+            var ticket = _context
+                .Tickets
+                .Single(t => t.Id == ticketId);
 
             var model = new UpdateTicketViewModel()
             {
@@ -125,7 +219,7 @@ namespace BugTracker.Controllers
                     .Include(p => p.Developers)
                     .Single(p => p.Id == ticket.ProjectId)
                     .Developers
-                    .ToList() ,
+                    .ToList(),
 
                 Priorities = _context.Priorities.ToList(),
 
@@ -133,27 +227,52 @@ namespace BugTracker.Controllers
 
                 TicketStatus = _context.TicketStatuses.ToList(),
 
-                FileModel = new FileModel
-                {
-                    TicketId = ticket.Id
-                } 
-
+                FileModel = new FileModel { TicketId = ticket.Id }
 
             };
 
+            return model;
 
+        }
 
+        public UpdateTicketViewModel PopulateModelForUsers(int ticketId)
+        {
 
-            return View(model);
+            var ticket = _context.Tickets
+                .Include(t => t.AssignedDeveloper)
+                .Include(t => t.TicketType)
+                .Include(t => t.Priority)
+                .Single(t => t.Id == ticketId);
 
+            var model = new UpdateTicketViewModel()
+            {
+                Ticket = ticket,
+
+                FileModel = new FileModel { TicketId = ticket.Id }
+            };
+
+            if (User.IsInRole(Roles.CanChangeFixedStated))
+            {
+
+                model.TicketStatus = _context.TicketStatuses
+                    .Where(ts => ts.Name == StatusName.Fixed | ts.Name == StatusName.Assigned | ts.Name == StatusName.InProgress)
+                    .ToList();
+            }
+            else if (User.IsInRole(Roles.CanChangeTestedState))
+            {
+                model.TicketStatus = _context.TicketStatuses
+                    .Where(ts => ts.Name == StatusName.Fixed | ts.Name == StatusName.Tested)
+                    .ToList();
+            }
+
+            return model;
 
         }
 
 
 
-
-
-        [HttpPost]
+        [System.Web.Mvc.HttpPost]
+        [System.Web.Mvc.Authorize(Roles = Roles.CanManageUsers)]
         public ActionResult Update(UpdateTicketViewModel model)
         {
 
@@ -169,7 +288,6 @@ namespace BugTracker.Controllers
                 var ticket = _context
                     .Tickets
                     .Single(t => t.Id == model.Ticket.Id);
-
 
 
                     ticket.Title = model.Ticket.Title;
@@ -201,14 +319,52 @@ namespace BugTracker.Controllers
 
         }
 
- 
+
+        [System.Web.Mvc.HttpPost]
+        [System.Web.Mvc.Authorize(Roles =  Roles.CanChangeFixedStated + "," + Roles.CanChangeTestedState)]
+        public ActionResult UpdateStatus(UpdateTicketViewModel model)
+        {
+
+            if (!ModelState.IsValid)
+            {
+                TempData["swal"] = "Something went wrong" + "| |" + "error";
+                return RedirectToAction("Details", model);
+            }
+
+            try
+            {
+                var ticket = _context
+                    .Tickets
+                    .Single(t => t.Id == model.Ticket.Id);
+
+                ticket.StatusId = model.Ticket.StatusId;
+
+                _context.SaveChanges();
+
+                TempData["swal"] = "Ticket Updated successfully" + "| |" + "success";
 
 
-        [HttpPost]
+                return RedirectToAction("Details", "Project", new { id = model.Ticket.ProjectId });
+            }
+            catch
+            {
+                TempData["swal"] = "Something went wrong" + "| |" + "error";
+
+                return RedirectToAction("Details", "Ticket", new { id = model.Ticket.Id });
+
+            }
+
+
+        }
+
+
+
+
+        [System.Web.Mvc.HttpPost]
         public ActionResult FileUpload(FileModel model)
         {
 
-            var supportedTypes = new[] { ".pdf", ".png",".jpg" };
+            var supportedTypes = new[] { ".pdf", ".png",".jpg",".pdf",".txt" };
 
             if (model.TicketId == 0 || model.FileUpload == null || model.Description == null)
             {
@@ -262,7 +418,7 @@ namespace BugTracker.Controllers
                 return RedirectToAction("Details","Ticket", new {  id = model.TicketId });
 
             }
-            catch
+            catch(Exception e)
             {
                 TempData["swal"] = "Something went wrong" + "| |" + "error";
                 return RedirectToAction("Details","Ticket", new { id = model.TicketId });

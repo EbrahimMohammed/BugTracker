@@ -50,7 +50,7 @@ namespace BugTracker.Models
         public string Description { get; set; }
 
         [Required]
-        [RegularExpression(@"([a-zA-Z0-9\s_\\.\-:])+(.png|.jpg|.gif|.pdf|)$", ErrorMessage = "Unsupported file type")]
+        [RegularExpression(@"([a-zA-Z0-9\s_\\.\-:])+(.png|.jpg|.gif|.pdf|.txt)$", ErrorMessage = "Unsupported file type")]
         public HttpPostedFileBase FileUpload { get; set; }
 
 

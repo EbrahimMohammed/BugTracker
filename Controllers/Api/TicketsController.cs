@@ -13,6 +13,7 @@ using BugTracker.Core.Domain;
 using BugTracker.Dtos;
 using BugTracker.Models;
 using BugTracker.Persistance;
+using Microsoft.AspNet.Identity;
 using File = BugTracker.Core.Domain.File;
 
 namespace BugTracker.Controllers.Api
@@ -65,6 +66,33 @@ namespace BugTracker.Controllers.Api
 
 
 
+        [System.Web.Http.Route("api/tickets/GetMyTickets")]
+        public IHttpActionResult GetMyTickets()
+        {
+
+            var ticketDtos = new List<TicketDto>();
+            var userId = User.Identity.GetUserId();
+
+            if (User.IsInRole(Roles.CanManageUsers) || User.IsInRole(Roles.CanManageProjects))
+            {
+
+                ticketDtos = _context.Tickets
+                    .Include(t => t.Priority)
+                    .Include(t => t.Status)
+                    .Include(t => t.TicketType)
+                    .Where(t => t.CreatedBy == userId)
+                    .ToList()
+                    .Select(Mapper.Map<Ticket, TicketDto>).ToList();
+
+            }
+
+
+
+
+
+            return Ok(ticketDtos);
+
+        }
 
 
     }
