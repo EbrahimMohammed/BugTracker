@@ -1,5 +1,5 @@
-﻿@model BugTracker.Core.Domain.Project
-
+﻿@using Roles = BugTracker.Models.Roles
+@model BugTracker.Core.Domain.Project
 
 
 
@@ -38,15 +38,19 @@
 
 </div>
 
-<div class="row mb-2">
-    <div class="col-md-12 text-right">
+@if (User.IsInRole(Roles.CanManageProjects))
+{
+    <div class="row mb-2">
 
+        <div class="col-md-12 text-right">
 
-        @Html.ActionLink("New ticket", "Create", "Ticket", new { id = Model.Id }, new { @class = "btn btn-create" })
+            @Html.ActionLink("New ticket", "Create", "Ticket", new {id = Model.Id}, new {@class = "btn btn-create"})
+
+        </div>
 
     </div>
 
-</div>
+}
 
 <div class="row">
     <div class="col-md-12">
@@ -165,7 +169,7 @@
                     data: "Email"
                 },
                 {
-                    data: "Id"
+                    data: "Role"
 
                 }
             ]

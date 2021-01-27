@@ -18,13 +18,13 @@ namespace BugTracker.Persistance.EntityConfiguration
                 .IsRequired();
 
 
-            HasMany(p => p.Developers)
+            HasMany(p => p.Users)
                 .WithMany(a => a.Projects)
                 .Map(cs =>
                 {
                     cs.MapLeftKey("ProjectId");
-                    cs.MapRightKey("DeveloperId");
-                    cs.ToTable("ProjectDeveloper");
+                    cs.MapRightKey("UserId");
+                    cs.ToTable("ProjectUserMapping");
                 });
 
             HasMany(p => p.Tickets)

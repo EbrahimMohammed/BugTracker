@@ -18,7 +18,6 @@
                     </div>
                     <div class="p-0 text-right mr-2">
                         <ul class="breadcrumb bg-white float-right m-0 pl-0 pr-0">
-                            <li class=""><a href="/Dashboard/index">Dashboard</a></li>
                             <li class=" active">Projects</li>
                         </ul>
                     </div>
@@ -31,15 +30,6 @@
     </div>
 </div>
 
-<div class="row mb-2">
-    <div class="col-md-12 text-right">
-
-
-        @Html.ActionLink("New project","Create","Project","",new {@class="btn btn-create"})
-
-    </div>
-
-</div>
 
 <div class="row">
     <div class="col-12">
@@ -54,7 +44,6 @@
                             <th>Name</th>
                             <th>Created Date</th>
                             <th>Team</th>
-                            <th>Edit</th>
                         </tr>
                     </thead>
 
@@ -84,11 +73,8 @@
                 ajax: {
                     url: "/api/project",
                     dataSrc: ""
-                },
-
-                aoColumnDefs: [
-                    { "searchable": false, "bSortable": false, "aTargets": [3] }
-            ],
+                }
+            ,
             columns: [
                 {
                     data: "Name",
@@ -108,21 +94,12 @@
                     }
                 },
                 {
-                    data: "Developers",
+                    data: "Users",
                     render: function(data, type, project) {
 
-                        return '<i class="fas fa-user-friends fa-lg"></i>' + project.Developers.length;
+                        return '<i class="fas fa-user-friends fa-lg"></i>' + project.Users.length;
 
                     }
-                },
-                {
-                    date: "Id",
-                    render: function(data, type, project) {
-
-                        return "<a href='/project/edit/" + project.Id + "'><i class='far fa-edit fa-lg'></i></a>";
-
-                    }
-
                 }
             ]
         });

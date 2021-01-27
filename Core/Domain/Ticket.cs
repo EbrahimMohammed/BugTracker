@@ -20,6 +20,7 @@ namespace BugTracker.Core.Domain
         [Required]
         public int PriorityId { get; set; }
 
+
         public int StatusId { get; set; }
 
         public DateTime? DueDate { get; set; }
@@ -29,6 +30,10 @@ namespace BugTracker.Core.Domain
 
         public ApplicationUser AssignedDeveloper { get; set; }
 
+        public string AssignedTesterId { get; set; }
+
+
+        public ApplicationUser AssignedTester { get; set; }
 
         public int ProjectId { get; set; }
 

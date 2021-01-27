@@ -202,11 +202,29 @@
     <Compile Include="App_Start\WebApiConfig.cs" />
     <Compile Include="Contants\Menus.cs" />
     <Compile Include="Controllers\AccountController.cs" />
+    <Compile Include="Controllers\Api\BaseApiController.cs" />
     <Compile Include="Controllers\Api\CommentsController.cs" />
+    <Compile Include="Controllers\BaseController.cs" />
     <Compile Include="Helper.cs" />
     <Compile Include="Migrations\202101161234541_PopulateInProgressTicketStatus.cs" />
     <Compile Include="Migrations\202101161234541_PopulateInProgressTicketStatus.designer.cs">
       <DependentUpon>202101161234541_PopulateInProgressTicketStatus.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202101181521065_RenameProjectDevelopersToUsers.cs" />
+    <Compile Include="Migrations\202101181521065_RenameProjectDevelopersToUsers.designer.cs">
+      <DependentUpon>202101181521065_RenameProjectDevelopersToUsers.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202101181526185_RenameProjectUserToProjectUserMapping.cs" />
+    <Compile Include="Migrations\202101181526185_RenameProjectUserToProjectUserMapping.designer.cs">
+      <DependentUpon>202101181526185_RenameProjectUserToProjectUserMapping.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202101201159201_AddTesterToTicket.cs" />
+    <Compile Include="Migrations\202101201159201_AddTesterToTicket.designer.cs">
+      <DependentUpon>202101201159201_AddTesterToTicket.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202101201208504_Test.cs" />
+    <Compile Include="Migrations\202101201208504_Test.designer.cs">
+      <DependentUpon>202101201208504_Test.cs</DependentUpon>
     </Compile>
     <Compile Include="Models\Constants.cs" />
     <Compile Include="Dtos\CommentsDto.cs" />
@@ -405,7 +423,9 @@
     <Content Include="Content\Site.css" />
     <Content Include="images\add-icon.png" />
     <Content Include="images\bg-1.png" />
+    <Content Include="images\DTLogo-light.png" />
     <Content Include="images\directory-bg.jpg" />
+    <Content Include="images\DTLogo.png" />
     <Content Include="images\favicon.ico" />
     <Content Include="images\flags\french_flag.jpg" />
     <Content Include="images\flags\germany_flag.jpg" />
@@ -763,8 +783,8 @@
     <Content Include="Scripts\respond.js" />
     <Content Include="Scripts\respond.min.js" />
     <Content Include="Scripts\waves.min.js" />
-    <Content Include="plugins\toaster\toastr.css" />
-    <Content Include="plugins\toaster\toastr.js" />
+    <Content Include="plugins\toastr\toastr.css" />
+    <Content Include="plugins\toastr\toastr.js" />
     <Content Include="Web.config" />
     <Content Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
@@ -923,6 +943,18 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\202101161234541_PopulateInProgressTicketStatus.resx">
       <DependentUpon>202101161234541_PopulateInProgressTicketStatus.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202101181521065_RenameProjectDevelopersToUsers.resx">
+      <DependentUpon>202101181521065_RenameProjectDevelopersToUsers.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202101181526185_RenameProjectUserToProjectUserMapping.resx">
+      <DependentUpon>202101181526185_RenameProjectUserToProjectUserMapping.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202101201159201_AddTesterToTicket.resx">
+      <DependentUpon>202101201159201_AddTesterToTicket.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202101201208504_Test.resx">
+      <DependentUpon>202101201208504_Test.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>

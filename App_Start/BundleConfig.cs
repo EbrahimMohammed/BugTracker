@@ -47,7 +47,8 @@ namespace BugTracker
                     "~/plugins/select2/js/select2.js",
                     "~/plugins/bootstrap-datepicker/js/bootstrap-datepicker.js",
                     "~/plugins/toaster/toaster.js",
-                    "~/plugisn/parsleyjs/parsley.min.js"
+                    "~/plugisn/parsleyjs/parsley.min.js",
+                    "~/plugins/toastr/toastr.js"
 
                 ));
 
@@ -70,7 +71,7 @@ namespace BugTracker
                     "~/plugins/datatables/Select-1.3.1/css/*.css",
                     "~/plugins/select2/css/select2.min.css",
                     "~/plugins/bootstrap-datepicker/dist/css/bootstrap-datepicker.min.css",
-                    "~/plugins/toaster/toaster.css"
+                    "~/plugins/toastr/toastr.css"
 
             ));
 

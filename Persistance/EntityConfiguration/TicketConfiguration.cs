@@ -22,13 +22,27 @@ namespace BugTracker.Persistance.EntityConfiguration
                 .HasForeignKey(t => t.StatusId);
 
             HasOptional(t => t.AssignedDeveloper)
-                .WithMany(u => u.Tickets)
+                .WithMany(u => u.DeveloperTickets)
                 .HasForeignKey(t => t.AssignedDeveloperId);
 
+            HasOptional(t => t.AssignedTester)
+                .WithMany(u => u.TesterTickets)
+                .HasForeignKey(t => t.AssignedTesterId);
+
+
+            HasRequired(t => t.CreatedByTable)
+                .WithMany(u => u.CreatorTickets)
+                .HasForeignKey(t => t.CreatedBy)
+                .WillCascadeOnDelete(false);
 
             HasRequired(t => t.TicketType)
                 .WithMany(tt => tt.Tickets)
                 .HasForeignKey(t => t.TicketTypeId);
+
+
+
+            HasRequired(t => t.Priority)
+                .WithMany(p => p.Tickets);
 
 
 

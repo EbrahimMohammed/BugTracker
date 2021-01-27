@@ -8,13 +8,13 @@ namespace BugTracker.Core.Domain
     {
         public Project()
         {
-            Developers = new List<ApplicationUser>();
+            Users = new List<ApplicationUser>();
         }
         public string Name { get; set; }
 
         public string Description { get; set; }
 
-        public List<ApplicationUser> Developers { get; set; }
+        public List<ApplicationUser> Users { get; set; }
 
         public List<Ticket> Tickets { get; set; }
     }

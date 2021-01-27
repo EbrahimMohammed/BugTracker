@@ -86,7 +86,7 @@ namespace BugTracker.Controllers.Api
 
             var project = _context
                 .Projects
-                .Include(p => p.Developers)
+                .Include(p => p.Users)
                 .SingleOrDefault(p => p.Id == id);
 
 
@@ -96,9 +96,9 @@ namespace BugTracker.Controllers.Api
 
             var availableUsers = new List<ApplicationUser>();
 
-            if (project.Developers != null)
+            if (project.Users != null)
             {
-                var unAvailableUsersIds = project.Developers.Select(d => d.Id);
+                var unAvailableUsersIds = project.Users.Select(d => d.Id);
 
 
                 availableUsers = _context
@@ -125,16 +125,22 @@ namespace BugTracker.Controllers.Api
 
             var project = _context
                 .Projects
-                .Include(p => p.Developers)
+                .Include(p => p.Users)
                 .SingleOrDefault(p => p.Id == id);
 
             if (project == null)
                 return NotFound();
 
-            var projectUsers = project.Developers.ToList();
+            var projectUsers = project.Users.ToList();
 
 
             var userDto = Mapper.Map<List<ApplicationUser>, List<UserDto>>(projectUsers);
+
+
+            foreach (var user in userDto)
+            {
+                user.Role = _userManager.GetRoles(user.Id).FirstOrDefault();
+            }
 
 
             return Ok(userDto);
@@ -196,22 +202,21 @@ namespace BugTracker.Controllers.Api
         [System.Web.Http.Route("api/users/AssignRole")]
         public IHttpActionResult AssignRole(AssignRoleModel model)
         {
-            //if (!ModelState.IsValid)
-            //    return BadRequest();
+            if (!ModelState.IsValid)
+                return BadRequest();
+
+            //get old role of user if it exists
+            var oldRole = _userManager.GetRoles(model.UserId).FirstOrDefault();
+
+            var newRole = _roleManager.Roles.Single(r => r.Id == model.RoleId);
 
 
-            ////get old role of user if it exists
-            //var oldRole = _userManager.GetRoles(model.UserId).FirstOrDefault();
+            //remove old role
+            if (oldRole != null)
+                _userManager.RemoveFromRole(model.UserId, oldRole);
 
-            //var newRole = _roleManager.Roles.Single(r => r.Id == model.RoleId);
-
-
-            ////remove old role
-            //if (oldRole != null)
-            //    _userManager.RemoveFromRole(model.UserId, oldRole);
-
-            //// add new role
-            //_userManager.AddToRole(model.UserId, newRole.Name);
+            // add new role
+            _userManager.AddToRole(model.UserId, newRole.Name);
 
             return Ok();
 

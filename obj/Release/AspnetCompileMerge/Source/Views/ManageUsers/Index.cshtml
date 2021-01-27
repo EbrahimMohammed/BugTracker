@@ -1,4 +1,10 @@
 ﻿
+@section styles{
+
+
+}
+
+
 @model BugTracker.Models.ManageUsersModel
 
 @{
@@ -34,20 +40,19 @@
     </div>
 </div>
 
+
+
 <form id="assignForm">
 
+<div class="row">
 
 
-    <div class="row">
+    <div class="col-lg-5">
+        <div class="card m-b-20">
+            <div class="card-body">
 
 
-
-        <div class="col-lg-5">
-            <div class="card m-b-20">
-                <div class="card-body">
-
-
-                    <h4 class="mt-0 header-title m-b-30">Assign role</h4>
+                <h4 class="mt-0 header-title m-b-30">Assign role</h4>
 
 
 
@@ -55,23 +60,21 @@
 
 
                         <label class="control-label">Select user</label>
-                        <select id="usersDropDown" required>
-
-                        </select>
+                        <select id="usersDropDown" required></select>
 
 
                     </div>
 
                     <label class="control-label">Select role</label>
                     <div class="form-group">
-                        @Html.DropDownListFor(m => m.RoleId, new SelectList(Model.Roles, "Id", "Name"), "Roles", new { @class = "form-control", id = "rolesDropDown", required = "required"})
+                        @Html.DropDownListFor(m => m.RoleId, new SelectList(Model.Roles, "Id", "Name"), "Roles", new { @class = "form-control", id = "rolesDropDown", required = "required" })
 
                     </div>
 
 
 
 
-                    <div class="">
+                    <div>
                         <button id="btn-submit" type="submit" class="btn btn-primary waves-effect waves-light">
                             Submit
                         </button>
@@ -79,45 +82,46 @@
                     </div>
 
 
-                </div>
+
+
             </div>
         </div>
-
-
-        <div class="col-lg-7">
-            <div class="card m-b-20">
-                <div class="card-body">
-
-                    <h4 class="mt-0 header-title m-b-30">Users List</h4>
-
-
-                    <table id="usersTable" class="table table-hover" style="border-collapse: collapse; border-spacing: 0; width: 100%;">
-
-                        <thead>
-                            <tr>
-                                <th>Name</th>
-                                <th>Email</th>
-                                <th>Role</th>
-                            </tr>
-                        </thead>
-
-
-                    </table>
-
-
-
-                </div>
-            </div>
-        </div> <!-- end col -->
     </div>
+    <div class="col-lg-7">
+        <div class="card m-b-20">
+            <div class="card-body">
 
-</form>
+                <h4 class="mt-0 header-title m-b-30">Users List</h4>
 
 
+                <table id="usersTable" class="table table-hover" style="border-collapse: collapse; border-spacing: 0; width: 100%;">
+
+                    <thead>
+                        <tr>
+                            <th>Name</th>
+                            <th>Email</th>
+                            <th>Role</th>
+                        </tr>
+                    </thead>
+
+
+                </table>
+
+
+
+            </div>
+        </div>
+    </div> <!-- end col -->
+</div>
+
+
+    </form>
 @section scripts
 {
+    <script src="~/plugins/parsleyjs/parsley.min.js"></script>
 
     <script>
+
         $(document).ready(function() {
 
 
@@ -185,11 +189,38 @@
                 placeholder: 'Choose'
             });
 
-            var userId = $("#usersDropDown option:selected").val();
-            var roleId = $("#rolesDropDown option:selected").val();
 
 
-            $('form').parsley();
+            $('#assignForm').parsley();
+
+            $('#assignForm').submit(function(e) {
+
+                e.preventDefault();
+
+                var userId = $("#usersDropDown option:selected").val();
+                var roleId = $("#rolesDropDown option:selected").val();
+                
+                $.ajax({
+                        url: "/api/users/AssignRole",
+                        method: "post",
+                        data: { UserId: userId, RoleId: roleId }
+                    })
+                    .done(function () {
+
+                        rolesSelect.val(null).trigger('change');
+                        usersSelect.val(null).trigger('change');
+                        usersTable.ajax.reload();
+
+                        toastr.success("User assigned successfully.");
+
+                    })
+                    .fail(function() {
+                        toastr.error("Something unexpected happened.");
+                    });
+
+            });
+
+
 
         });
     </script>
@@ -197,3 +228,4 @@
 
 
 }
+

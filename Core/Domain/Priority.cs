@@ -1,4 +1,5 @@
-﻿using System.Runtime.InteropServices;
+﻿using System.Collections.Generic;
+using System.Runtime.InteropServices;
 
 namespace BugTracker.Core.Domain
 {
@@ -8,5 +9,6 @@ namespace BugTracker.Core.Domain
         public int Id { get; set; }
         public string Name { get; set; }
 
+        public List<Ticket> Tickets { get; set; }
     }
 }

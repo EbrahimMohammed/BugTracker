@@ -4,12 +4,14 @@ using System.Data.Entity;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
+using BugTracker.Core.Domain;
 using BugTracker.Models;
 using BugTracker.Persistance;
+using Microsoft.AspNet.Identity;
 
 namespace BugTracker.Controllers
 {
-    public class ProjectController : Controller
+    public class ProjectController : BaseController
     {
         private readonly ApplicationDbContext _context;
 
@@ -42,7 +44,7 @@ namespace BugTracker.Controllers
         [Authorize(Roles = Roles.CanManageProjects)]
         public ActionResult Edit(int id)
         {
-            var project = _context.Projects.Include(p => p.Developers).SingleOrDefault(c => c.Id == id);
+            var project = _context.Projects.Include(p => p.Users).SingleOrDefault(c => c.Id == id);
 
             if (project == null)
                 return HttpNotFound();
@@ -56,23 +58,29 @@ namespace BugTracker.Controllers
             };
 
 
-
-
-
             return View(updateProjectModel);
         }
 
         public ActionResult Details(int id)
         {
 
-            var project = _context.Projects.Single(p => p.Id == id);
+
+            var project = _context
+                .Projects
+                .Include(p => p.Users)
+                .SingleOrDefault(p => p.Id == id);
+
 
 
             if (project == null)
                 return HttpNotFound();
 
-            return View(project);
 
+            if (!IsAuthorizedUser(project.Id))
+                return HttpNotFound();
+
+
+            return View(project);
 
         }
 

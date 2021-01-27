@@ -19,7 +19,11 @@ namespace BugTracker.Models
         public List<Project> Projects { get; set; }
 
 
-        public List<Ticket> Tickets { get; set; }
+        public List<Ticket> DeveloperTickets { get; set; }
+
+        public List<Ticket> TesterTickets { get; set; }
+
+        public List<Ticket> CreatorTickets { get; set; }
             
         public async Task<ClaimsIdentity> GenerateUserIdentityAsync(UserManager<ApplicationUser> manager)
         {

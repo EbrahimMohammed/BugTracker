@@ -1,42 +1,53 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Data.Entity;
 using System.Linq;
 using System.Net.Http;
 using System.Web.Http;
+using System.Web.UI.WebControls;
 using AutoMapper;
 using BugTracker.Core;
 using BugTracker.Core.Domain;
 using BugTracker.Dtos;
 using BugTracker.Models;
-using BugTracker.Persistance;
 using Microsoft.Ajax.Utilities;
+using Microsoft.AspNet.Identity;
 
 namespace BugTracker.Controllers.Api
 {
-    public class ProjectController : ApiController
+
+    [Authorize]
+    public class ProjectController : BaseApiController
     {
-        private readonly ApplicationDbContext _context;
-
-
-
-        public ProjectController()
-        {
-            _context = new ApplicationDbContext();
-        }
-
-
+      
+    
 
 
         public IHttpActionResult GetProjects()
         {
 
-            var projectsDto = _context.Projects
-                .Include(p =>p.Developers)
-                .ToList()
-                .Select(Mapper.Map<Project, ProjectDto>);
+            List<Project> projects;
 
+
+            if (User.IsInRole(Roles.CanManageUsers))
+            {
+
+                projects = Context.Projects.Include(p => p.Users).ToList();
+
+            }
+            else
+            {  
+                
+                projects = Context
+                    .Projects.Include(p => p.Users)
+                    .Where(p => p.Users.Select(u => u.Id).Contains(CurrentUserId))
+                    .ToList();
+
+            }
+
+            var projectsDto = projects.Select(Mapper.Map<Project, ProjectDto>).ToList();
 
             return Ok(projectsDto);
 
@@ -44,6 +55,7 @@ namespace BugTracker.Controllers.Api
 
 
         [HttpPost]
+        [Authorize(Roles= Roles.CanManageProjects)]
         public IHttpActionResult CreateProject(CreateProjectModel model)
         {
             if (!ModelState.IsValid)
@@ -58,28 +70,29 @@ namespace BugTracker.Controllers.Api
 
             };
 
+            project.Users.Add(Context.Users.Single(u => u.Id == CurrentUserId));
+
 
             if (model.UsersIds != null)
             {
                 if (model.UsersIds.Count > 0)
                 {
 
-                    var developers = _context
-                                                        .Users
-                                                        .Where(u => model.UsersIds.Contains(u.Id))
-                                                        .ToList();
+                    var developers = Context
+                        .Users
+                        .Where(u => model.UsersIds.Contains(u.Id))
+                        .ToList();
 
-
-                    project.Developers.AddRange(developers);
+                    project.Users.AddRange(developers);
                 }
 
             }
 
 
-            _context.Projects.Add(project);
+            Context.Projects.Add(project);
 
       
-            _context.SaveChanges();
+            Context.SaveChanges();
 
             var projectDto = Mapper.Map<Project, ProjectDto>(project);
 
@@ -98,14 +111,11 @@ namespace BugTracker.Controllers.Api
             if (!ModelState.IsValid)
                 return BadRequest();
 
-            var project = _context.Projects
-                                .Include(p => p.Developers)
-                                .SingleOrDefault(p => p.Id == model.Id);
+            var project = Context.Projects
+                .Include(p => p.Users)
+                .Single(p => p.Id == model.Id);
 
-            if (project == null)
-                return NotFound();
-
-
+            
             var newDevelopers = new List<ApplicationUser>();
 
 
@@ -113,16 +123,16 @@ namespace BugTracker.Controllers.Api
             {
                 if (model.UsersIds.Count > 0)
                 {
-                    newDevelopers = _context
+                    newDevelopers = Context
                             .Users
                             .Where(u => model.UsersIds.Contains(u.Id)).ToList();
                 }
             }
 
-            project.Developers = newDevelopers;
+            project.Users = newDevelopers;
 
 
-            _context.SaveChanges();
+            Context.SaveChanges();
 
             return Ok();
         }

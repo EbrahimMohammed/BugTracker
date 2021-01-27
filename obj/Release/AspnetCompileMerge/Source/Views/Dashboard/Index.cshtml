@@ -1,12 +1,12 @@
 ﻿@using BugTracker.Core.Domain
 @using BugTracker.Models
+@using Roles = BugTracker.Models.Roles
 @model BugTracker.Models.DashboardViewModel
 
 
 @section styles{
 
-    @Styles.Render("~/plugins/morriscss")
-
+    @Styles.Render("~/plugins/chartscss")
 
 }
 
@@ -79,20 +79,6 @@
 
                 <h4 class="mt-0 header-title">Tickets by type</h4>
 
-                @*<ul class="list-inline widget-chart m-t-20 m-b-15 text-center">
-                    <li class="list-inline-item">
-                        <h5 class="mb-0">@Model.TicketByTypeModel.Bugs</h5>
-                        <p class="text-muted ">@TicketTypes.Bugs</p>
-                    </li>
-                    <li class="list-inline-item">
-                        <h5 class="mb-0">@Model.TicketByTypeModel.ChangeRequests</h5>
-                        <p class="text-muted ">@TicketTypes.ChangeRequest</p>
-                    </li>
-                    <li class="list-inline-item">
-                        <h5 class="mb-0">@Model.TicketByTypeModel.NewFunctionalities</h5>
-                        <p class="text-muted ">@TicketTypes.NewFunctionality</p>
-                    </li>
-                </ul>*@
 
                 <div id="tickets-by-type" class="morris-chart-height"></div>
 
@@ -106,20 +92,6 @@
 
                 <h4 class="mt-0 header-title">Tickets by priority</h4>
 
-                @*<ul class="list-inline widget-chart m-t-20 m-b-15 text-center">
-                    <li class="list-inline-item">
-                        <h5 class="mb-0">@Model.TicketByPriorityModel.High</h5>
-                        <p class="text-muted ">@Priorities.High</p>
-                    </li>
-                    <li class="list-inline-item">
-                        <h5 class="mb-0">@Model.TicketByPriorityModel.Medium</h5>
-                        <p class="text-muted ">@Priorities.Medium</p>
-                    </li>
-                    <li class="list-inline-item">
-                        <h5 class="mb-0">@Model.TicketByPriorityModel.Low</h5>
-                        <p class="text-muted ">@Priorities.Low</p>
-                    </li>
-                </ul>*@
 
                 <div id="tickets-by-priority" class="morris-chart-height"></div>
 
@@ -129,41 +101,113 @@
 </div>
 
 
+<div class="row">
+    <div class="col-lg-6">
+        <div class="card m-b-30">
+            <div class="card-body">
+
+                <h4 class="mt-0 header-title">Tickets by status</h4>
+
+                <div id="tickets-by-status" class="morris-chart-height"></div>
+
+
+            </div>
+
+
+        </div>
+
+    </div>
+    
+    
+    <div class="col-lg-6">
+    <div class="card m-b-30">
+        <div class="card-body">
+
+            <h4 class="mt-0 header-title">Users</h4>
+
+            <div id="users-chart" class="morris-chart-height"></div>
+
+
+        </div>
+
+
+    </div>
+
+</div>
+</div>
 
 @section scripts {
 
-    @Scripts.Render("~/bundles/morrisjs")
-    
-    
+    @Scripts.Render("~/bundles/chartsjs")
+
+
 <script>
 
 
         new Morris.Donut({
-              element: 'tickets-by-type',
-               data: [
-                   {label: "@TicketTypes.Bugs", value: @Model.TicketByTypeModel.Bugs},
-                   {label: "@TicketTypes.ChangeRequest", value: @Model.TicketByTypeModel.ChangeRequests},
-                   {label: "@TicketTypes.NewFunctionality", value: @Model.TicketByTypeModel.NewFunctionalities},
-                ],
-               resize: true,
-               colors: ['#ec536c', '#7a6fbe', '#28bbe3']
-           });
-
+            element: 'tickets-by-type',
+            data: [
+                { label: "@TicketTypes.Bugs", value: @Model.TicketByTypeModel.Bugs },
+                { label: "@TicketTypes.ChangeRequest", value: @Model.TicketByTypeModel.ChangeRequests },
+                { label: "@TicketTypes.NewFunctionality", value: @Model.TicketByTypeModel.NewFunctionalities },
+            ],
+            resize: true,
+            colors: ['#ec536c', '#7a6fbe', '#28bbe3']
+        });
 
 
         new Morris.Donut({
-              element: 'tickets-by-priority',
-               data: [
-                   {label: "@Priorities.High", value: @Model.TicketByPriorityModel.High},
-                   {label: "@Priorities.Medium", value: @Model.TicketByPriorityModel.Medium},
-                   {label: "@Priorities.Low", value: @Model.TicketByPriorityModel.Low},
+            element: 'tickets-by-priority',
+            data: [
+                { label: "@Priorities.High", value: @Model.TicketByPriorityModel.High },
+                { label: "@Priorities.Medium", value: @Model.TicketByPriorityModel.Medium },
+                { label: "@Priorities.Low", value: @Model.TicketByPriorityModel.Low },
+            ],
+            resize: true,
+            colors: ['#ec536c', '#7a6fbe', '#28bbe3']
+        });
+
+
+
+
+        var chart = c3.generate({
+            bindto: '#tickets-by-status',
+            data: {
+                columns: [
+                    ['@StatusName.Pending', @Model.TicketByStatusModel.Pending],
+                    ['@StatusName.Assigned', @Model.TicketByStatusModel.Assigned],
+                    ['@StatusName.Fixed', @Model.TicketByStatusModel.Fixed],
+                    ['@StatusName.Tested', @Model.TicketByStatusModel.Tested],
+                    ['@StatusName.Closed', @Model.TicketByStatusModel.Closed]
                 ],
-               resize: true,
-               colors: ['#ec536c', '#7a6fbe', '#28bbe3']
-           });
+                type: 'pie'
+            },
+            color: {
+                pattern: ['#f0f1f4', '#7a6fbe', '#28bbe3', '#2f8ee0', '#ec536c']
+            }
+        });
 
 
+        new Morris.Bar({
+            element: 'users-chart',
+            data: [
+            { role: '@Roles.CanManageUsers', roleCount: @Model.UserRolesModel.AdminsCount },
+            { role: '@Roles.CanManageProjects', roleCount: @Model.UserRolesModel.ProjectManagers },
+            { role: '@Roles.CanChangeFixedStated', roleCount: @Model.UserRolesModel.DevelopersCount },
+            { role: '@Roles.CanChangeTestedState', roleCount: @Model.UserRolesModel.TestersCount }
+            ],
+            xkey: 'role',
+            ykeys: ['roleCount'],
+            hideHover: 'auto',
+            barSizeRatio: 0.4,
+            resize: true, //defaulted to true
+            gridLineColor: '#eeeeee',
+            barColors: ['#7a6fbe'],
+            labels: ['users in role'],
+            xLabelMargin: 10
 
+
+        });
 
 
 </script>

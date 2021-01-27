@@ -18,86 +18,69 @@ using File = BugTracker.Core.Domain.File;
 
 namespace BugTracker.Controllers
 {
-    public class TicketController : Controller
+    public class TicketController : BaseController
     {
-        private ApplicationDbContext _context;
-        private string _uploadFolder;
-        private static UserStore<IdentityUser> _userStore;
-        private static UserManager<IdentityUser> _userManager;
-        private static RoleStore<IdentityRole> _roleStore;
-        private static RoleManager<IdentityRole> _roleManager;
-
-
-
-
-        public TicketController()
-        {
-            _context = new ApplicationDbContext();
-            _uploadFolder = ConfigurationManager.AppSettings["UploadFolder"];
-            _userStore = new UserStore<IdentityUser>();
-            _userManager = new UserManager<IdentityUser>(_userStore);
-            _roleStore = new RoleStore<IdentityRole>();
-            _roleManager = new RoleManager<IdentityRole>(_roleStore);
-        }
-
+        
 
         public ActionResult Index()
         {
-
-          
-
             return View();
         }
 
 
-
+        [System.Web.Mvc.Authorize(Roles = Roles.CanManageProjects)]
         public ActionResult Create(int id)
         {
-            var ticket = new Ticket
-            {
-                ProjectId = id
 
-            };
+
+            if (!IsAuthorizedUser(id))
+                return HttpNotFound();
+
+            var ticket = new Ticket 
+                {
+                ProjectId = id
+                };
+
 
             var model = new CreateTicketViewModel
             {
                 Ticket   = ticket,
 
-                ProjectUsers = _context
+                ProjectUsers = Context
                     .Projects
-                    .Include(p => p.Developers)
+                    .Include(p => p.Users)
                     .Single(p => p.Id == id)
-                    .Developers,
+                    .Users,
 
-                Priorities = _context.Priorities.ToList(),
+                Priorities = Context.Priorities.ToList(),
 
-                TicketTypes = _context.TicketTypes.ToList()
+                TicketTypes = Context.TicketTypes.ToList()
 
 
             };
-           
-
-
-
             return View(model);
         }
 
 
+        
         [System.Web.Mvc.HttpPost]
+        [System.Web.Mvc.Authorize(Roles = Roles.CanManageProjects)]
         public ActionResult Create(CreateTicketViewModel model)
         {
+
+
             if (!ModelState.IsValid)
             {
                 TempData["swal"] = "Something went wrong" + "| |" + "error";
                 return View(model);
             }
 
+            if (!IsAuthorizedUser(model.Ticket.ProjectId))
+                return HttpNotFound();
+
             try
             {
-
-
                 var ticket = model.Ticket;
-
 
                 if (ticket.AssignedDeveloperId.IsNullOrWhiteSpace())
                 {
@@ -108,10 +91,9 @@ namespace BugTracker.Controllers
                     ticket.StatusId = (int) Status.Assigned;
                 }
 
+                Context.Tickets.Add(ticket);
 
-                _context.Tickets.Add(ticket);
-
-                _context.SaveChanges();
+                Context.SaveChanges();
                 TempData["swal"] = "Ticket created successfully" + "| |" + "success";
 
 
@@ -129,9 +111,13 @@ namespace BugTracker.Controllers
 
         public ActionResult Details(int id)
         {
-            var role = _userManager.GetRoles(User.Identity.GetUserId()).FirstOrDefault();
+
+            var role = UserManager.GetRoles(User.Identity.GetUserId()).FirstOrDefault();
 
             var model = PopulateUpdateTicketViewModel(id , role);
+
+            if (!IsAuthorizedUser(model.Ticket.ProjectId))
+                return HttpNotFound();
 
 
             if (role == Roles.CanManageProjects)
@@ -143,9 +129,6 @@ namespace BugTracker.Controllers
 
 
             return View("DetailsUserView", model);
-
-
-
         }
 
 
@@ -185,7 +168,7 @@ namespace BugTracker.Controllers
 
         public UpdateTicketViewModel PopulateModelForAdmin(int ticketId)
         {
-            var ticket = _context
+            var ticket = Context
                 .Tickets
                 .Include(t => t.AssignedDeveloper)
                 .Include(t => t.TicketType)
@@ -206,7 +189,7 @@ namespace BugTracker.Controllers
 
         public UpdateTicketViewModel PopulateModelForProjectManager(int ticketId)
         {
-            var ticket = _context
+            var ticket = Context
                 .Tickets
                 .Single(t => t.Id == ticketId);
 
@@ -214,31 +197,30 @@ namespace BugTracker.Controllers
             {
                 Ticket = ticket,
 
-                ProjectUsers = _context
+                ProjectUsers = Context
                     .Projects
-                    .Include(p => p.Developers)
+                    .Include(p => p.Users)
                     .Single(p => p.Id == ticket.ProjectId)
-                    .Developers
+                    .Users
                     .ToList(),
 
-                Priorities = _context.Priorities.ToList(),
+                Priorities = Context.Priorities.ToList(),
 
-                TicketTypes = _context.TicketTypes.ToList(),
+                TicketTypes = Context.TicketTypes.ToList(),
 
-                TicketStatus = _context.TicketStatuses.ToList(),
+                TicketStatus = Context.TicketStatuses.ToList(),
 
                 FileModel = new FileModel { TicketId = ticket.Id }
 
             };
 
             return model;
-
         }
 
         public UpdateTicketViewModel PopulateModelForUsers(int ticketId)
         {
 
-            var ticket = _context.Tickets
+            var ticket = Context.Tickets
                 .Include(t => t.AssignedDeveloper)
                 .Include(t => t.TicketType)
                 .Include(t => t.Priority)
@@ -254,13 +236,13 @@ namespace BugTracker.Controllers
             if (User.IsInRole(Roles.CanChangeFixedStated))
             {
 
-                model.TicketStatus = _context.TicketStatuses
+                model.TicketStatus = Context.TicketStatuses
                     .Where(ts => ts.Name == StatusName.Fixed | ts.Name == StatusName.Assigned | ts.Name == StatusName.InProgress)
                     .ToList();
             }
             else if (User.IsInRole(Roles.CanChangeTestedState))
             {
-                model.TicketStatus = _context.TicketStatuses
+                model.TicketStatus = Context.TicketStatuses
                     .Where(ts => ts.Name == StatusName.Fixed | ts.Name == StatusName.Tested)
                     .ToList();
             }
@@ -276,6 +258,9 @@ namespace BugTracker.Controllers
         public ActionResult Update(UpdateTicketViewModel model)
         {
 
+            if (!IsAuthorizedUser(model.Ticket.ProjectId))
+                return HttpNotFound();
+
             if (!ModelState.IsValid)
             {
                 TempData["swal"] = "Something went wrong" + "| |" + "error";
@@ -285,10 +270,9 @@ namespace BugTracker.Controllers
             try
             {
 
-                var ticket = _context
+                var ticket = Context
                     .Tickets
                     .Single(t => t.Id == model.Ticket.Id);
-
 
                     ticket.Title = model.Ticket.Title;
                     ticket.Description = model.Ticket.Description;
@@ -298,13 +282,11 @@ namespace BugTracker.Controllers
                     ticket.TicketTypeId = model.Ticket.TicketTypeId;
                     ticket.StatusId = model.Ticket.StatusId;
 
-                    
 
+                Context.SaveChanges();
 
-                _context.SaveChanges();
 
                 TempData["swal"] = "Ticket Updated successfully" + "| |" + "success";
-
 
                 return RedirectToAction("Details", "Project", new { id = model.Ticket.ProjectId });
             }
@@ -313,10 +295,7 @@ namespace BugTracker.Controllers
                 TempData["swal"] = "Something went wrong" + "| |" + "error";
 
                 return RedirectToAction("Details","Ticket", new {id = model.Ticket.Id});
-                
             }
-
-
         }
 
 
@@ -333,13 +312,13 @@ namespace BugTracker.Controllers
 
             try
             {
-                var ticket = _context
+                var ticket = Context
                     .Tickets
                     .Single(t => t.Id == model.Ticket.Id);
 
                 ticket.StatusId = model.Ticket.StatusId;
 
-                _context.SaveChanges();
+                Context.SaveChanges();
 
                 TempData["swal"] = "Ticket Updated successfully" + "| |" + "success";
 
@@ -388,8 +367,7 @@ namespace BugTracker.Controllers
 
                 fileName = DateTime.Now.ToString("yyMMddhhmmss") + "-" + fileName.Trim() + fileExtension;
 
-
-                var path = Path.Combine(Server.MapPath(_uploadFolder), fileName);
+                var path = Path.Combine(Server.MapPath(UploadFolder), fileName);
 
                 model.FileUpload.SaveAs(path);
 
@@ -406,11 +384,9 @@ namespace BugTracker.Controllers
                 };
 
 
+                Context.Files.Add(file);
 
-
-                _context.Files.Add(file);
-
-                _context.SaveChanges();
+                Context.SaveChanges();
 
 
                 TempData["swal"] = "File uploaded successfully" + "| |" + "success";
@@ -426,28 +402,18 @@ namespace BugTracker.Controllers
 
         }
 
-
-
         public FileResult DownloadFile(int id)
         {
 
-            var file = _context.Files.Single(f => f.Id == id);
+            var file = Context.Files.Single(f => f.Id == id);
 
-            var fileVirtualPath = Path.Combine(Server.MapPath(_uploadFolder), file.Name);
+            var fileVirtualPath = Path.Combine(Server.MapPath(UploadFolder), file.Name);
 
             return File(fileVirtualPath, "application/force-download", Path.GetFileName(fileVirtualPath));
 
 
         }
 
-
-        protected override void Dispose(bool disposing)
-        {
-
-            _context.Dispose();
-
-            base.Dispose(disposing);
-        }
 
 
     }

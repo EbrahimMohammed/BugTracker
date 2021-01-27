@@ -152,3 +152,6 @@ D:\Bug tracker - current\BugTracker\obj\Release\BugTracker.dll
 D:\Bug tracker - current\BugTracker\obj\Release\BugTracker.pdb
 D:\Bug tracker - current\BugTracker\obj\Release\BugTracker.Migrations.CreateCommentTable.resources
 D:\Bug tracker - current\BugTracker\obj\Release\BugTracker.Migrations.LinkCommentsToTicket.resources
+D:\Bug tracker - current\BugTracker\obj\Release\BugTracker.Migrations.PopulateInProgressTicketStatus.resources
+D:\Bug tracker - current\BugTracker\obj\Release\BugTracker.Migrations.RenameProjectDevelopersToUsers.resources
+D:\Bug tracker - current\BugTracker\obj\Release\BugTracker.Migrations.RenameProjectUserToProjectUserMapping.resources

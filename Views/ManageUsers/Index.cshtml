@@ -2,65 +2,6 @@
 @section styles{
 
 
-<style rel="stylesheet">
-    #example {
-        border: solid 1px grey;
-        border-radius: 4px;
-        padding: 4px;
-    }
-
-    .select {
-        width: 100%;
-    }
-
-    .select2-input {
-        border-radius: 4px;
-    }
-    /* for validation */
-    .has-success .select2-selection, .has-success .select2-container,
-    .has-success .select2-choice, .has-success .select2-choices {
-        border-color: #3c763d;
-        box-shadow: 0 1px 1px rgba(0, 0, 0, 0.075) inset;
-    }
-
-        .has-success .select2-selection:focus, .has-success .select2-container:focus,
-        .has-success .select2-choice:focus, .has-success .select2-choices:focus {
-            border-color: #2b542c;
-            box-shadow: 0 1px 1px rgba(0, 0, 0, 0.075) inset, 0 0 6px #67b168;
-        }
-
-    .has-error .select2-selection, .has-error .select2-container,
-    .has-error .select2-choice, .has-error .select2-choices {
-        border-color: #a94442;
-        box-shadow: 0 1px 1px rgba(0, 0, 0, 0.075) inset;
-    }
-
-        .has-error .select2-selection:focus, .has-error .select2-container:focus,
-        .has-error .select2-choice:focus, .has-error .select2-choices:focus {
-            border-color: #843534;
-            box-shadow: 0 1px 1px rgba(0, 0, 0, 0.075) inset, 0 0 6px #ce8483;
-        }
-
-    .select2-choices {
-        border-radius: 4px;
-    }
-    /* .has-success .select2-choice {
-      border-color: #3c763d;
-      box-shadow: 0 1px 1px rgba(0, 0, 0, 0.075) inset;
-      }
-      .has-success .select2-choice:focus {
-      border-color: #2b542c;
-      box-shadow: 0 1px 1px rgba(0, 0, 0, 0.075) inset, 0 0 6px #67b168;
-      }
-      .has-error .select2-choice {
-      border-color: #a94442;
-      box-shadow: 0 1px 1px rgba(0, 0, 0, 0.075) inset;
-      }
-      .has-error .select2-choice:focus {
-      border-color: #843534;
-      box-shadow: 0 1px 1px rgba(0, 0, 0, 0.075) inset, 0 0 6px #ce8483;
-      }*/
-</style>
 }
 
 
@@ -101,6 +42,7 @@
 
 
 
+<form id="assignForm">
 
 <div class="row">
 
@@ -113,7 +55,6 @@
                 <h4 class="mt-0 header-title m-b-30">Assign role</h4>
 
 
-                <form id="assignForm">
 
                     <div class="form-group">
 
@@ -140,7 +81,6 @@
 
                     </div>
 
-                </form>
 
 
 
@@ -175,12 +115,14 @@
 </div>
 
 
-
+    </form>
 @section scripts
 {
+    <script src="~/plugins/parsleyjs/parsley.min.js"></script>
 
     <script>
-        $(document).ready(function () {
+
+        $(document).ready(function() {
 
 
             var usersTable = $("#usersTable").DataTable({
@@ -198,7 +140,7 @@
 
                     }, {
                         data: "Role",
-                        render: function (data, type, user) {
+                        render: function(data, type, user) {
                             return data == null ? "N/A" : data;
                         }
 
@@ -212,7 +154,7 @@
                 ajax: {
                     url: '/api/users/GetUsers',
                     dataType: 'json',
-                    data: function (params) {
+                    data: function(params) {
                         var query = {
                             search: params.term
                         }
@@ -223,10 +165,10 @@
                     },
                     minimumInputLength: 1,
 
-                    processResults: function (data, page) {
+                    processResults: function(data, page) {
                         return {
                             results: $.map(data,
-                                function (item) {
+                                function(item) {
                                     return {
                                         text: item.UserName,
                                         name: item.UserName,
@@ -247,63 +189,37 @@
                 placeholder: 'Choose'
             });
 
-            var userId = $("#usersDropDown option:selected").val();
-            var roleId = $("#rolesDropDown option:selected").val();
 
 
-            //$("#assignForm").validate({
+            $('#assignForm').parsley();
 
-            //    submitHandler: function() {
+            $('#assignForm').submit(function(e) {
 
-            //        $.ajax({
-            //                url: "/api/users/AssignRole",
-            //                method: "post",
-            //                data: { UserId: userId, RoleId: roleId }
-            //            })
-            //            .done(function() {
-            //                //toastr.success("Rentals successfully recorded.");
+                e.preventDefault();
 
-            //                //$("#customer").typeahead('val', '');
-            //                //$("#movie").typeahead('val', '');
-            //                //$("#movies").empty();
-            //                //vm = { movieIds: [] };
-            //                //validator.resetForm();
+                var userId = $("#usersDropDown option:selected").val();
+                var roleId = $("#rolesDropDown option:selected").val();
+                
+                $.ajax({
+                        url: "/api/users/AssignRole",
+                        method: "post",
+                        data: { UserId: userId, RoleId: roleId }
+                    })
+                    .done(function () {
 
-            //                console.log("success");
-            //            })
-            //            .fail(function() {
-            //                //toastr.error("Something unexpected happened.");
-            //                console.log("fail");
-            //            });
+                        rolesSelect.val(null).trigger('change');
+                        usersSelect.val(null).trigger('change');
+                        usersTable.ajax.reload();
 
-            //        return false;
-            //    }
-            //});
+                        toastr.success("User assigned successfully.");
 
+                    })
+                    .fail(function() {
+                        toastr.error("Something unexpected happened.");
+                    });
 
-            //begin copy
-            $('#assignForm').validate(
-                {
-                    errorPlacement: function (error, element) { },
-                    highlight: function (element) {
-                        $(element)
-                            .closest('.form-group')
-                            .removeClass('has-success')
-                            .addClass('has-error');
-                    },
-                    unhighlight: function (element) {
-                        $(element)
-                            .closest('.form-group')
-                            .removeClass('has-error')
-                            .addClass('has-success');
-                    }
-                }
-            );
-
-            $('select').on('change', function() {  // when the value changes
-                $(this).valid(); // trigger validation on this element
             });
-            //end copy
+
 
 
         });
