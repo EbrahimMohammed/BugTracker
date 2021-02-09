@@ -24,7 +24,7 @@ namespace BugTracker.Controllers
 
         public ActionResult Index()
         {
-            return View();
+            return View(User.IsInRole(Roles.CanManageUsers) ? "Index.Admin" : "Index.User");
         }
 
 
@@ -67,7 +67,6 @@ namespace BugTracker.Controllers
         [System.Web.Mvc.Authorize(Roles = Roles.CanManageProjects)]
         public ActionResult Create(CreateTicketViewModel model)
         {
-
 
             if (!ModelState.IsValid)
             {

@@ -29,6 +29,7 @@ namespace BugTracker.Persistance
 
         public DbSet<Comments> Comments { get; set; }
 
+        public DbSet<Organization> Organizations { get; set; }
 
 
         //public DbSet<UserExtension> UserExtensions { get; set; }
@@ -45,22 +46,26 @@ namespace BugTracker.Persistance
         public override int SaveChanges()
         {
 
-            var AddedEntities = ChangeTracker.Entries<BaseEntity>().Where(E => E.State == EntityState.Added).ToList();
+            var addedEntities = ChangeTracker.Entries<BaseEntity>().Where(E => E.State == EntityState.Added).ToList();
             try
             {
 
-                AddedEntities.ForEach(E =>
+                addedEntities.ForEach(E =>
                 {
                     E.Entity.CreatedDate = DateTime.Now;
+                    E.Entity.ModifiedDate = DateTime.Now;
                     E.Entity.CreatedBy =  HttpContext.Current.User.Identity.GetUserId();
                     E.Entity.ModifiedBy = HttpContext.Current.User.Identity.GetUserId();
 
                 });
 
-                var ModifiedEntities = ChangeTracker.Entries<BaseEntity>().Where(E => E.State == EntityState.Modified)
+
+                var modifiedEntities = ChangeTracker.Entries<BaseEntity>()
+                    .Where(E => E.State == EntityState.Modified)
                     .ToList();
 
-                ModifiedEntities.ForEach(E => { E.Entity.ModifiedDate = DateTime.Now;
+                modifiedEntities.ForEach(E => {
+                    E.Entity.ModifiedDate = DateTime.Now;
                     E.Entity.ModifiedBy = HttpContext.Current.User.Identity.GetUserId();
                 });
 
@@ -82,7 +87,7 @@ namespace BugTracker.Persistance
             modelBuilder.Configurations.Add(new TicketTypeConfigurations());
             modelBuilder.Configurations.Add(new FileConfiguration());
             modelBuilder.Configurations.Add(new CommentsConfigurations());
-       
+            modelBuilder.Configurations.Add(new OrganizationConfiguration());
 
             base.OnModelCreating(modelBuilder);
         }

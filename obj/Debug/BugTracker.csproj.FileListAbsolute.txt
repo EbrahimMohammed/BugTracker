@@ -564,3 +564,7 @@ D:\Bug tracker - current\BugTracker\obj\Debug\BugTracker.Migrations.RenameProjec
 D:\Bug tracker - current\BugTracker\obj\Debug\BugTracker.Migrations.RenameProjectUserToProjectUserMapping.resources
 D:\Bug tracker - current\BugTracker\obj\Debug\BugTracker.Migrations.AddTesterToTicket.resources
 D:\Bug tracker - current\BugTracker\obj\Debug\BugTracker.Migrations.Test.resources
+D:\Bug tracker - current\BugTracker\obj\Debug\BugTracker.Migrations.CreateOrganizationTable.resources
+D:\Bug tracker - current\BugTracker\obj\Debug\BugTracker.Migrations.MapOrganizationToUsers.resources
+D:\Bug tracker - current\BugTracker\obj\Debug\BugTracker.Migrations.MapProjectToOrganization.resources
+D:\Bug tracker - current\BugTracker\obj\Debug\BugTracker.Migrations.MapOrganizationToTicket.resources

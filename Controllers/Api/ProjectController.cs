@@ -21,30 +21,38 @@ namespace BugTracker.Controllers.Api
     [Authorize]
     public class ProjectController : BaseApiController
     {
-      
-    
-
+        
 
         public IHttpActionResult GetProjects()
         {
 
             List<Project> projects;
 
+            //Get organization of the current user
+            var organization = Context.Users
+                .Include(u => u.Organization)
+                .Single(u => u.Id == CurrentUserId)
+                .Organization;
+
+
+            //Query to load organization projects with related users
+            var organizationProjects = Context
+                .Entry(organization).Collection(o => o.Projects)
+                .Query().Include(p => p.Users);
 
             if (User.IsInRole(Roles.CanManageUsers))
             {
 
-                projects = Context.Projects.Include(p => p.Users).ToList();
+                //Load all projects if the user is admin
+                projects = organizationProjects.ToList();
 
             }
             else
             {  
-                
-                projects = Context
-                    .Projects.Include(p => p.Users)
+                //Load projects where current user is a member
+                projects = organizationProjects
                     .Where(p => p.Users.Select(u => u.Id).Contains(CurrentUserId))
                     .ToList();
-
             }
 
             var projectsDto = projects.Select(Mapper.Map<Project, ProjectDto>).ToList();
@@ -60,8 +68,6 @@ namespace BugTracker.Controllers.Api
         {
             if (!ModelState.IsValid)
                 return BadRequest();
-
-
 
             var project = new Project
             {
@@ -136,6 +142,36 @@ namespace BugTracker.Controllers.Api
 
             return Ok();
         }
+
+
+        //works for single organization module.
+        //public IHttpActionResult GetAllProjects()
+        //{
+
+        //    List<Project> projects;
+
+        //    var projectsWithUsers = Context.Projects.Include(p => p.Users);
+
+        //    if (User.IsInRole(Roles.CanManageUsers))
+        //    {
+
+        //        projects = projectsWithUsers.ToList();
+
+        //    }
+        //    else
+        //    {
+
+        //        projects = projectsWithUsers
+        //            .Where(p => p.Users.Select(u => u.Id).Contains(CurrentUserId))
+        //            .ToList();
+
+        //    }
+
+        //    var projectsDto = projects.Select(Mapper.Map<Project, ProjectDto>).ToList();
+
+        //    return Ok(projectsDto);
+
+        //}
 
 
 

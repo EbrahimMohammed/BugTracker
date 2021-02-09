@@ -1,9 +1,48 @@
-﻿@model System.Web.Mvc.HandleErrorInfo
-
+﻿@using Roles = BugTracker.Models.Roles
 @{
-    ViewBag.Title = "Error";
+    Layout = null;
 }
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=0, minimal-ui">
+    <title>Lexa - Responsive Bootstrap 4 Admin Dashboard</title>
+    <meta content="Admin Dashboard" name="description" />
+    <meta content="Themesbrand" name="author" />
+    <link rel="shortcut icon" href="~/images/favicon.ico">
 
-<h1 class="text-danger">Error.</h1>
-<h2 class="text-danger">An error occurred while processing your request.</h2>
+    @Styles.Render("~/Content/css")
+</head>
 
+<body>
+<div class="wrapper-page">
+
+    <div class="card">
+        <div class="card-block">
+
+            <div class="ex-page-content text-center">
+                <h1 class="text-dark">500</h1>
+                <h4 class="">Internal Server Error</h4><br>
+                
+                @if (User.IsInRole(Roles.CanManageUsers))
+                {
+                    <a class="btn btn-info mb-5 waves-effect waves-light" href="@Url.Action("Index", "Dashboard")"><i class="mdi mdi-home"></i> Back to Home</a>
+
+                }
+                else
+                {
+                    <a class="btn btn-info mb-5 waves-effect waves-light" href="@Url.Action("Index", "Project")"><i class="mdi mdi-home"></i> Back to Home</a>
+
+                }
+            </div>
+        </div>
+    </div>
+
+
+</div>
+
+@Scripts.Render("~/bundles/jquery")
+</body>
+</html>

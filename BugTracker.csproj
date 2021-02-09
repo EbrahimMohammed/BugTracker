@@ -205,6 +205,8 @@
     <Compile Include="Controllers\Api\BaseApiController.cs" />
     <Compile Include="Controllers\Api\CommentsController.cs" />
     <Compile Include="Controllers\BaseController.cs" />
+    <Compile Include="Controllers\ErrorController.cs" />
+    <Compile Include="Core\Domain\Organization.cs" />
     <Compile Include="Helper.cs" />
     <Compile Include="Migrations\202101161234541_PopulateInProgressTicketStatus.cs" />
     <Compile Include="Migrations\202101161234541_PopulateInProgressTicketStatus.designer.cs">
@@ -225,6 +227,22 @@
     <Compile Include="Migrations\202101201208504_Test.cs" />
     <Compile Include="Migrations\202101201208504_Test.designer.cs">
       <DependentUpon>202101201208504_Test.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202102010844486_CreateOrganizationTable.cs" />
+    <Compile Include="Migrations\202102010844486_CreateOrganizationTable.designer.cs">
+      <DependentUpon>202102010844486_CreateOrganizationTable.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202102011007215_MapOrganizationToUsers.cs" />
+    <Compile Include="Migrations\202102011007215_MapOrganizationToUsers.designer.cs">
+      <DependentUpon>202102011007215_MapOrganizationToUsers.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202102011022413_MapProjectToOrganization.cs" />
+    <Compile Include="Migrations\202102011022413_MapProjectToOrganization.designer.cs">
+      <DependentUpon>202102011022413_MapProjectToOrganization.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202102020424264_MapOrganizationToTicket.cs" />
+    <Compile Include="Migrations\202102020424264_MapOrganizationToTicket.designer.cs">
+      <DependentUpon>202102020424264_MapOrganizationToTicket.cs</DependentUpon>
     </Compile>
     <Compile Include="Models\Constants.cs" />
     <Compile Include="Dtos\CommentsDto.cs" />
@@ -378,6 +396,7 @@
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Core\Domain\Project.cs" />
     <Compile Include="Models\CreateTicketModel.cs" />
+    <Compile Include="Models\CreateUserModel.cs" />
     <Compile Include="Models\DashboardViewModel.cs" />
     <Compile Include="Models\IdModel.cs" />
     <Compile Include="Models\ManageUsersModel.cs" />
@@ -386,6 +405,7 @@
     <Compile Include="Persistance\ApplicationDbContext.cs" />
     <Compile Include="Persistance\EntityConfiguration\CommentsConfigurations.cs" />
     <Compile Include="Persistance\EntityConfiguration\FileConfiguration.cs" />
+    <Compile Include="Persistance\EntityConfiguration\OrganizationConfiguration.cs" />
     <Compile Include="Persistance\EntityConfiguration\PriorityConfiguration.cs" />
     <Compile Include="Persistance\EntityConfiguration\ProjectConfigurations.cs" />
     <Compile Include="Persistance\EntityConfiguration\TicketConfiguration.cs" />
@@ -443,6 +463,8 @@
     <Content Include="images\small\img-5.jpg" />
     <Content Include="images\small\img-6.jpg" />
     <Content Include="images\small\img-7.jpg" />
+    <Content Include="images\users\default-avatar.jpg" />
+    <Content Include="images\users\default-avatar2.png" />
     <Content Include="images\users\user-1.jpg" />
     <Content Include="images\users\user-10.jpg" />
     <Content Include="images\users\user-2.jpg" />
@@ -744,7 +766,6 @@
     <Content Include="Content\scss\_form-validation.scss" />
     <Content Include="Content\scss\_general.scss" />
     <Content Include="Content\scss\_helper.scss" />
-    <Content Include="Content\scss\_invoice.scss" />
     <Content Include="Content\scss\_maps.scss" />
     <Content Include="Content\scss\_menu.scss" />
     <Content Include="Content\scss\_pagination.scss" />
@@ -762,6 +783,10 @@
     <Content Include="Content\scss\_waves.scss" />
     <Content Include="Content\scss\_widgets.scss" />
     <None Include="Properties\PublishProfiles\FTPProfile.pubxml" />
+    <Content Include="Scripts\bootstrap.bundle.js.map" />
+    <Content Include="Scripts\bootstrap.bundle.min.js.map" />
+    <Content Include="Scripts\bootstrap.js.map" />
+    <Content Include="Scripts\bootstrap.min.js.map" />
     <None Include="Scripts\jquery-3.4.1.intellisense.js" />
     <None Include="Scripts\jquery-1.10.2.intellisense.js" />
     <Content Include="Scripts\jquery-1.10.2.js" />
@@ -823,7 +848,7 @@
     <Content Include="Views\Shared\_Footer.cshtml" />
     <Content Include="Views\Shared\_Header.cshtml" />
     <Content Include="Views\Dashboard\Index.cshtml" />
-    <Content Include="Views\Project\UserView.cshtml" />
+    <Content Include="Views\Project\Index.User.cshtml" />
     <Content Include="Views\Project\Create.cshtml" />
     <Content Include="Views\Project\Edit.cshtml" />
     <Content Include="Views\Project\Details.cshtml" />
@@ -831,10 +856,13 @@
     <Content Include="Views\Ticket\DetailsManagerView.cshtml" />
     <Content Include="Views\ManageUsers\Index.cshtml" />
     <Content Include="Views\Ticket\_FileUpload.cshtml" />
-    <Content Include="Views\Ticket\Index.cshtml" />
-    <Content Include="Views\Project\ProjectManagerView.cshtml" />
+    <Content Include="Views\Ticket\Index.User.cshtml" />
+    <Content Include="Views\Project\Index.Manager.cshtml" />
     <Content Include="Views\Ticket\DetailsUserView.cshtml" />
     <Content Include="Views\Ticket\DetailsAdminView.cshtml" />
+    <Content Include="Views\Error\NotFound.cshtml" />
+    <Content Include="Views\Ticket\Index.Admin.cshtml" />
+    <Content Include="Views\ManageUsers\Create.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\uploads\" />
@@ -955,6 +983,18 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\202101201208504_Test.resx">
       <DependentUpon>202101201208504_Test.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202102010844486_CreateOrganizationTable.resx">
+      <DependentUpon>202102010844486_CreateOrganizationTable.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202102011007215_MapOrganizationToUsers.resx">
+      <DependentUpon>202102011007215_MapOrganizationToUsers.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202102011022413_MapProjectToOrganization.resx">
+      <DependentUpon>202102011022413_MapProjectToOrganization.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202102020424264_MapOrganizationToTicket.resx">
+      <DependentUpon>202102020424264_MapOrganizationToTicket.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>

@@ -26,56 +26,43 @@ using Microsoft.Owin.Security;
 
 namespace BugTracker.Controllers.Api
 {
-    public class UsersController : ApiController
+    public class UsersController : BaseApiController
     {
 
-
-        private readonly ApplicationDbContext _context;
-
-        private UserStore<IdentityUser> _userStore;
-        private UserManager<IdentityUser> _userManager;
-        private RoleStore<IdentityRole> _roleStore;
-        private RoleManager<IdentityRole> _roleManager;
-
-          
-
-        public UsersController()
-        {
-            _context = new ApplicationDbContext();
-
-             _userStore = new UserStore<IdentityUser>();
-             _userManager = new UserManager<IdentityUser>(_userStore);
-             _roleStore = new RoleStore<IdentityRole>();
-             _roleManager = new RoleManager<IdentityRole>(_roleStore);
-        }
-
-       
         
-
+        
 
         // GET:url/api/users
         public IHttpActionResult GetUsers(string search = null)
         {
+            var usersDtos = Enumerable.Empty<UserDto>();
 
+            var organization = Context.Users
+                .Include(u => u.Organization)
+                .Single(u => u.Id == CurrentUserId)
+                .Organization;
 
-            var projectsQuery = _context.Users.AsQueryable();
-
-
-
-
-            if (!search.IsNullOrWhiteSpace())
+            if (organization != null)
             {
-                projectsQuery = projectsQuery.Where(u => u.UserName.Contains(search));
+                Context.Entry(organization).Collection(o => o.OrganizationUsers).Load();
+
+                var usersQuery = organization
+                    .OrganizationUsers
+                    .Where(u => u.Id != CurrentUserId)
+                    .AsQueryable();
+
+                if (!search.IsNullOrWhiteSpace())
+                {
+                    usersQuery = usersQuery.Where(u => u.UserName.Contains(search));
+                }
+
+                usersDtos = usersQuery
+                    .ToList()
+                    .Select(Mapper.Map<ApplicationUser, UserDto>);
             }
 
-
-            var projectsDto = projectsQuery
-                                                    .ToList()
-                                                    .Select(Mapper.Map<ApplicationUser, UserDto>);
-
             
-            return Ok(projectsDto);
-
+            return Ok(usersDtos);
         }
 
 
@@ -83,8 +70,7 @@ namespace BugTracker.Controllers.Api
         public IHttpActionResult GetAvailableUsers(int id)
         {
 
-
-            var project = _context
+            var project = Context
                 .Projects
                 .Include(p => p.Users)
                 .SingleOrDefault(p => p.Id == id);
@@ -101,7 +87,7 @@ namespace BugTracker.Controllers.Api
                 var unAvailableUsersIds = project.Users.Select(d => d.Id);
 
 
-                availableUsers = _context
+                availableUsers = Context
                     .Users
                     .Where
                         (u => !(unAvailableUsersIds.Contains(u.Id)))
@@ -123,7 +109,7 @@ namespace BugTracker.Controllers.Api
         public IHttpActionResult GetProjectUsers(int id)
         {
 
-            var project = _context
+            var project = Context
                 .Projects
                 .Include(p => p.Users)
                 .SingleOrDefault(p => p.Id == id);
@@ -139,7 +125,7 @@ namespace BugTracker.Controllers.Api
 
             foreach (var user in userDto)
             {
-                user.Role = _userManager.GetRoles(user.Id).FirstOrDefault();
+                user.Role = UserManager.GetRoles(user.Id).FirstOrDefault();
             }
 
 
@@ -151,16 +137,19 @@ namespace BugTracker.Controllers.Api
         [System.Web.Http.Route("api/users/GetUsersWithRoles")]
         public IHttpActionResult GetUsersWithRoles()
         {
+            var usersDtos = new List<UserDto>();
 
-            var usersDtos = _context.Users.ToList().Select(Mapper.Map<ApplicationUser, UserDto>).ToList();
+            var organization = Context.Users
+                .Include(u => u.Organization)
+                .Single(u => u.Id == CurrentUserId)
+                .Organization;
 
 
-            foreach (var user in usersDtos)
+            if (organization != null)
             {
-                user.Role = _userManager.GetRoles(user.Id).FirstOrDefault();
+
+               usersDtos = UsersWithRoles(organization.Id);
             }
-
-
 
 
             return Ok(usersDtos);
@@ -172,13 +161,10 @@ namespace BugTracker.Controllers.Api
         [System.Web.Http.Route("api/users/GetAssignedUsers")]
         public IHttpActionResult GetAssignedUsers()
         {
-            
-
-            var adminRole = _roleManager.Roles.Single(r => r.Name == "Admin");
+            var adminRole = RoleManager.Roles.Single(r => r.Name == "Admin");
 
 
-
-            var usersDtos = _context.Users
+            var usersDtos = Context.Users
                 .Include(u => u.Roles)
                 .Where(u => u.Roles.Any() && u.Roles.FirstOrDefault().RoleId != adminRole.Id)
                 .ToList()
@@ -186,10 +172,9 @@ namespace BugTracker.Controllers.Api
                 .ToList();
 
 
-
             foreach (var user in usersDtos)
             {
-                user.Role = _userManager.GetRoles(user.Id).FirstOrDefault();
+                user.Role = UserManager.GetRoles(user.Id).FirstOrDefault();
             }
 
 
@@ -206,23 +191,120 @@ namespace BugTracker.Controllers.Api
                 return BadRequest();
 
             //get old role of user if it exists
-            var oldRole = _userManager.GetRoles(model.UserId).FirstOrDefault();
+            var oldRole = UserManager.GetRoles(model.UserId).FirstOrDefault();
 
-            var newRole = _roleManager.Roles.Single(r => r.Id == model.RoleId);
+            var newRole = RoleManager.Roles.Single(r => r.Id == model.RoleId);
 
 
             //remove old role
             if (oldRole != null)
-                _userManager.RemoveFromRole(model.UserId, oldRole);
+                UserManager.RemoveFromRole(model.UserId, oldRole);
 
             // add new role
-            _userManager.AddToRole(model.UserId, newRole.Name);
+            UserManager.AddToRole(model.UserId, newRole.Name);
 
             return Ok();
 
         }
 
+        [System.Web.Mvc.HttpPost]
+        [System.Web.Http.Route("api/users/CreateUser")]
+        public IHttpActionResult CreateUser(CreateUserModel model)
+        {
+            if (!ModelState.IsValid)
+                return BadRequest();
 
+            var store = new UserStore<ApplicationUser>(Context);
+
+            var manager = new UserManager<ApplicationUser, string>(store);
+
+            var role = RoleManager.Roles.SingleOrDefault(r => r.Id == model.RoleId);
+
+            if (role == null)
+                return NotFound();
+
+            var user = new ApplicationUser
+            {
+                UserName = model.Email,
+                Email = model.Email,
+                OrganizationId = Context.Users.Single(u => u.Id == CurrentUserId).OrganizationId
+            };
+
+            
+            var result = manager.Create(user, model.Password);
+
+            if (!result.Succeeded)
+                return GetErrorResult(result);
+
+
+                
+            result = manager.AddToRole(user.Id, role.Name);
+
+            if (!result.Succeeded)
+               return GetErrorResult(result);
+
+            var userResponse = new UserResponseModel
+            {
+                UserName = user.UserName,
+                Email = user.Email,
+                Role = role.Name
+
+            };
+            
+            return Created(new Uri(Request.RequestUri + "/" + user.Id), userResponse);
+        }
+
+
+
+
+        private IHttpActionResult GetErrorResult(IdentityResult result)
+        {
+            if (result == null)
+            {
+                return InternalServerError();
+            }
+
+            if (result.Errors != null)
+            {
+                foreach (var error in result.Errors)
+                {
+                    ModelState.AddModelError("", error);
+                }
+            }
+
+            if (ModelState.IsValid)
+            {
+                // No ModelState errors are available to send, so just return an empty BadRequest.
+                return BadRequest();
+            }
+
+            return BadRequest(ModelState);
+        }
+
+
+
+        public List<UserDto> UsersWithRoles(int organizationId)
+        {
+            var usersWithRoles = (from user in Context.Users.Where(u => u.OrganizationId == organizationId && u.Id != CurrentUserId)
+                select new
+                {
+                    UserId = user.Id,
+                    Username = user.UserName,
+                    Email = user.Email,
+                    RoleNames = (from userRole in user.Roles
+                        join role in Context.Roles on userRole.RoleId equals role.Id
+                        select role.Name).ToList()})
+                .ToList().Select(p => new UserDto()
+
+            {
+                Id = p.UserId,
+                UserName = p.Username,
+                Email = p.Email,
+                Role = p.RoleNames.FirstOrDefault()
+            });
+
+            return usersWithRoles.ToList();
+        }
 
 
 

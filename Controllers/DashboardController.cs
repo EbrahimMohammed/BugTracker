@@ -55,11 +55,11 @@ namespace BugTracker.Controllers
 
                 TotalUsers = totalUsers,
 
-                TicketByTypeModel =GetTicketByTypeModel(),
+                TicketByTypeModel =PopulateTicketByTypeModel(),
                 
-                TicketByPriorityModel = GetTicketPriorityModel(),
+                TicketByPriorityModel = PopulateGetTicketPriorityModel(),
 
-                TicketByStatusModel = GetTicketByStatusModel(),
+                TicketByStatusModel = PopulateTicketByStatusModel(),
 
                 UserRolesModel = PopulateUsersRolesModel()
 
@@ -74,7 +74,7 @@ namespace BugTracker.Controllers
 
 
 
-        public TicketByTypeModel GetTicketByTypeModel()
+        public TicketByTypeModel PopulateTicketByTypeModel()
         {
             var ticketWithTypeIncluded = _context.Tickets.Include(t => t.TicketType);
 
@@ -100,7 +100,7 @@ namespace BugTracker.Controllers
         }
 
 
-        public TicketByStatusModel GetTicketByStatusModel()
+        public TicketByStatusModel PopulateTicketByStatusModel()
         {
             var ticketWithStatusIncluded = _context.Tickets.Include(t => t.Status);
 
@@ -137,7 +137,7 @@ namespace BugTracker.Controllers
 
         }
 
-        public TicketByPriorityModel GetTicketPriorityModel()
+        public TicketByPriorityModel PopulateGetTicketPriorityModel()
         {
             var ticketWithPriorityIncluded = _context.Tickets.Include(t => t.Priority);
 
@@ -184,9 +184,6 @@ namespace BugTracker.Controllers
         };
 
         }
-
-
-
 
 
         public int GetUsersInRoleCount(string roleName)

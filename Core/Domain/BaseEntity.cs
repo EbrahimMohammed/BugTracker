@@ -9,8 +9,6 @@ namespace BugTracker.Core.Domain
     {
         public BaseEntity()
         {
-            CreatedDate = DateTime.Now;
-            ModifiedDate = DateTime.Now;
             IsDeleted = false;
             IsEnabled = true;
         }

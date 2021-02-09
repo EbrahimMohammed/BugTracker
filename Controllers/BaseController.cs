@@ -14,10 +14,15 @@
     {
 
         protected ApplicationDbContext Context;
+
         protected string UploadFolder;
+
         protected static UserStore<IdentityUser> UserStore;
+
         protected static UserManager<IdentityUser> UserManager;
+
         protected static RoleStore<IdentityRole> RoleStore;
+
         protected static RoleManager<IdentityRole> RoleManager;
 
 
@@ -25,7 +30,7 @@
         {
             Context = new ApplicationDbContext();
             UploadFolder = ConfigurationManager.AppSettings["UploadFolder"];
-            UserStore = new UserStore<IdentityUser>();
+            UserStore = new UserStore<IdentityUser>(Context);
             UserManager = new UserManager<IdentityUser>(UserStore);
             RoleStore = new RoleStore<IdentityRole>();
             RoleManager = new RoleManager<IdentityRole>(RoleStore);
@@ -54,6 +59,7 @@
 
         protected override void Dispose(bool disposing)
         {
+            
 
             Context.Dispose();
 

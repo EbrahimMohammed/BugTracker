@@ -3385,7 +3385,6 @@ Invoice
   margin: 5.5% auto;
   max-width: 460px;
   position: relative;
-    margin-top: 25px;
 }
 
 .wrapper-page .logo-admin {
@@ -3616,5 +3615,5 @@ input[type="search"] {
 .card .card-block 
 {
     max-height: 300px;
-    overflow: auto;
 }
+

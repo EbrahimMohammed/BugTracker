@@ -1,4 +1,5 @@
 ﻿using System.Web.Http;
+using BugTracker.Core.Domain;
 using BugTracker.Models;
 using BugTracker.Persistance;
 using Microsoft.AspNet.Identity;

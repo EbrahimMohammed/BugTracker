@@ -17,5 +17,9 @@ namespace BugTracker.Core.Domain
         public List<ApplicationUser> Users { get; set; }
 
         public List<Ticket> Tickets { get; set; }
+
+        public int? OrganizationId { get; set; }
+
+        public Organization Organization { get; set; }
     }
 }

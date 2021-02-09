@@ -21,44 +21,75 @@
 
 
 
-    <body>
-        <!-- Begin page -->
-        <div class="wrapper-page">
-            <div class="card">
-                <div class="card-body">
-                    <h3 class="text-center m-0">
-                        <a href="/dashboard" class="logo logo-admin"><img src="~/images/DTLogo.png" height="150" alt="logo"></a>
-                    </h3>
+<body>
+    <!-- Begin page -->
+    <div class="wrapper-page">
+        <div class="card">
+            <div class="card-body">
+                <h3 class="text-center m-0">
+                    <a href="/dashboard" class="logo logo-admin"><img src="~/images/DTLogo.png" height="150" alt="logo"></a>
+                </h3>
 
-                    <div class="p-3">
-                        @*<h4 class="text-muted font-18 m-b-5 text-center">Register</h4>*@
-                        
-                        @Html.ValidationSummary("",new {@class="text-danger text-center"})
-                        @using (Html.BeginForm("Register", "Account", FormMethod.Post))
-                        
-                        {
+                <div class="p-3">
+                    @*<h4 class="text-muted font-18 m-b-5 text-center">Register</h4>*@
 
-                        <div class="form-group">
-                            @Html.LabelFor(m => m.Email)
-                            @Html.TextBoxFor(m => m.Email, new {@class = "form-control", placeholder = "Enter email"})
-                            @Html.ValidationMessageFor(m => m.Email,"",new {@class="text-danger"})
-                        </div> 
+                    @Html.ValidationSummary("", new { @class = "text-danger text-center" })
+                    @using (Html.BeginForm("Register", "Account", FormMethod.Post))
 
+                    {
 
                         <div class="form-group">
-                            @Html.LabelFor(m => m.Password)
-                            @Html.PasswordFor(m => m.Password, new {@class = "form-control", placeholder = "Enter password"})
-                            @Html.ValidationMessageFor(m => m.Password, "",new {@class="text-danger"})
+                            @*@Html.LabelFor(m => m.Email)*@
+                            @Html.TextBoxFor(m => m.Email, new { @class = "form-control", placeholder = "Email" })
+                            @Html.ValidationMessageFor(m => m.Email, "", new { @class = "text-danger" })
+                        </div>
+
+
+                        <div class="form-group">
+                            @*@Html.LabelFor(m => m.Password)*@
+                            @Html.PasswordFor(m => m.Password, new { @class = "form-control", placeholder = "Password" })
+                            @Html.ValidationMessageFor(m => m.Password, "", new { @class = "text-danger" })
 
                         </div>
 
                         <div class="form-group">
-                            @Html.LabelFor(m => m.ConfirmPassword)
-                            @Html.PasswordFor(m => m.ConfirmPassword, new {@class = "form-control", placeholder = "Confirm password"})
-                            @Html.ValidationMessageFor(m => m.ConfirmPassword, "",new {@class="text-danger"})
+                            @*@Html.LabelFor(m => m.ConfirmPassword)*@
+                            @Html.PasswordFor(m => m.ConfirmPassword, new { @class = "form-control", placeholder = "Confirm password" })
+                            @Html.ValidationMessageFor(m => m.ConfirmPassword, "", new { @class = "text-danger" })
 
                         </div>
 
+                        <div class="mt-4">
+                            <div class="form-group">
+                                <label>Organization Details</label>
+                                @Html.TextBoxFor(m => m.OrganizationName, new { @class = "form-control", placeholder = "Organization Name" })
+                                @Html.ValidationMessageFor(m => m.OrganizationName, "", new { @class = "text-danger" })
+
+                            </div>
+
+                            <div class="form-group">
+                                @*@Html.LabelFor(m => m.AddressLine1)*@
+                                @Html.TextBoxFor(m => m.AddressLine1, new { @class = "form-control", placeholder = "Address Line 1" })
+                                @Html.ValidationMessageFor(m => m.AddressLine1, "", new { @class = "text-danger" })
+
+                            </div>
+
+                            <div class="form-group">
+                                @*@Html.LabelFor(m => m.AddressLine2)*@
+                                @Html.TextBoxFor(m => m.AddressLine2, new { @class = "form-control", placeholder = "Address Line 2" })
+                                @Html.ValidationMessageFor(m => m.AddressLine2, "", new { @class = "text-danger" })
+
+                            </div>
+
+
+                            <div class="form-group">
+                                @*@Html.LabelFor(m => m.ZipCode)*@
+                                @Html.TextBoxFor(m => m.ZipCode, new { @class = "form-control", placeholder = "Zip Code" })
+                                @Html.ValidationMessageFor(m => m.ZipCode, "", new { @class = "text-danger" })
+
+                            </div>
+
+                        </div>
                         <div class="form-group row m-t-20">
                             <div class="col-12 text-center">
                                 <button class="btn btn-primary w-md waves-effect waves-light" type="submit">Register</button>
@@ -68,19 +99,19 @@
 
                         @Html.AntiForgeryToken()
                     }
-                        
-                      
-                    </div>
+
 
                 </div>
-            </div>
 
-            <div class="m-t-20 text-center">
-                <p>Already have an account ? <a href="@Url.Action("Login","Account")" class="text-primary"> Login </a> </p>
             </div>
         </div>
-    @Scripts.Render("~/bundles/jquery") 
+
+        <div class="m-t-20 text-center">
+            <p>Already have an account ? <a href="@Url.Action("Login","Account")" class="text-primary"> Login </a> </p>
+        </div>
+    </div>
+    @Scripts.Render("~/bundles/jquery")
     @Scripts.Render("~/bundles/jqueryval")
-    </body>
+</body>
 </html>
 

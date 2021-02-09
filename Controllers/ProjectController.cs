@@ -27,11 +27,11 @@ namespace BugTracker.Controllers
 
             if (User.IsInRole(Roles.CanManageProjects))
             {
-                return View("ProjectManagerView");
+                return View("Index.Manager");
             }
 
 
-            return View("UserView");
+            return View("Index.User");
         }
 
 

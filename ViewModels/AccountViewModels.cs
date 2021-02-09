@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using BugTracker.Core.Domain;
 
 namespace BugTracker.ViewModels
 {
@@ -88,6 +89,27 @@ namespace BugTracker.ViewModels
         [Display(Name = "Confirm password")]
         [Compare("Password", ErrorMessage = "The password and confirmation password do not match.")]
         public string ConfirmPassword { get; set; }
+
+        [Required]
+        [Display(Name = "Organization Name")]
+        public string OrganizationName { get; set; }
+
+        [Required]
+        [Display(Name = "Zip Code")]
+        [RegularExpression(@"^(?!00000)[0-9]{5,5}$", ErrorMessage = "Invalid Zip Code")]
+
+        public string ZipCode { get; set; }
+
+        [Required]
+        [Display(Name = "Address Line 1")]
+        [MaxLength(255)]
+
+        public string AddressLine1 { get; set; }
+
+        [Display(Name = "Address Line 2")]
+        [MaxLength(255)]
+        public string AddressLine2 { get; set; }
+
     }
 
     public class ResetPasswordViewModel

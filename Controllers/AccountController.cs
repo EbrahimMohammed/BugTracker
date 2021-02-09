@@ -22,11 +22,14 @@ namespace BugTracker.Controllers
     {
         private ApplicationSignInManager _signInManager;
         private ApplicationUserManager _userManager;
+        private readonly ApplicationDbContext _context;
 
 
 
         public AccountController()
         {
+            _context = new ApplicationDbContext();
+
         }
 
 
@@ -170,7 +173,23 @@ namespace BugTracker.Controllers
 
             if (ModelState.IsValid)
             {
-                var user = new ApplicationUser {UserName = model.Email, Email = model.Email};
+
+                var organization = new Organization
+                {
+                    Name = model.OrganizationName,
+                    ZipCode = model.ZipCode,
+                    AddressLine1 = model.AddressLine1,
+                    AddressLine2 = model.AddressLine2
+                };
+
+                _context.Organizations.Add(organization);
+
+                _context.SaveChanges();
+
+
+
+
+                var user = new ApplicationUser {UserName = model.Email, Email = model.Email, OrganizationId = organization.Id};
                 var result = await UserManager.CreateAsync(user, model.Password);
                 if (result.Succeeded)
                 {
@@ -179,9 +198,9 @@ namespace BugTracker.Controllers
                     //var roleStore = new RoleStore<IdentityRole>(new ApplicationDbContext());
                     //var roleManager = new RoleManager<IdentityRole>(roleStore);
 
-                    //await roleManager.CreateAsync(new IdentityRole("Tester"));
+                    //await roleManager.CreateAsync(new IdentityRole(Roles.CanManageProjects));
 
-                    //UserManager.AddToRole(user.Id, "Tester");
+                    UserManager.AddToRole(user.Id, Roles.CanManageUsers);
 
                     await SignInManager.SignInAsync(user, isPersistent: false, rememberBrowser: false);
 
@@ -453,6 +472,10 @@ namespace BugTracker.Controllers
 
         protected override void Dispose(bool disposing)
         {
+
+            _context.Dispose();
+
+
             if (disposing)
             {
                 if (_userManager != null)

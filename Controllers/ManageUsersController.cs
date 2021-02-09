@@ -33,5 +33,17 @@ namespace BugTracker.Controllers
         }
 
 
+        public ActionResult Create()
+        {
+
+            var model = new CreateUserViewModel()
+            {
+                Roles = _context.Roles.ToList()
+            };
+
+
+            return View(model);
+        }
+
     }
 }

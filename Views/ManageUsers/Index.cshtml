@@ -22,13 +22,12 @@
                         <h5 class="page-title ml-3">
                             <span class="page-title-icon mr-1">
                                 <i class="fas fa-user-plus"></i>
-                            </span> Role Assignment
+                            </span> Manage Users
                         </h5>
                     </div>
                     <div class="p-0 text-right mr-2">
                         <ul class="breadcrumb bg-white float-right m-0 pl-0 pr-0">
-                            <li class="">@Html.ActionLink("Dashboard", "Index", "Dashboard")</li>
-                            <li class=" active">Role Assignment</li>
+                            <li class=" active">Manage Users</li>
                         </ul>
                     </div>
 
@@ -40,19 +39,27 @@
     </div>
 </div>
 
+<div class="row mb-2">
+    <div class="col-md-12 text-right">
 
 
+        @Html.ActionLink("Create User", "Create", "ManageUsers", "", new { @class = "btn btn-create" })
+
+    </div>
+
+</div>
 <form id="assignForm">
 
-<div class="row">
+
+    <div class="row">
 
 
-    <div class="col-lg-5">
-        <div class="card m-b-20">
-            <div class="card-body">
+        <div class="col-lg-5">
+            <div class="card m-b-20">
+                <div class="card-body">
 
 
-                <h4 class="mt-0 header-title m-b-30">Assign role</h4>
+                    <h4 class="mt-0 header-title m-b-30">Assign role</h4>
 
 
 
@@ -70,10 +77,7 @@
                         @Html.DropDownListFor(m => m.RoleId, new SelectList(Model.Roles, "Id", "Name"), "Roles", new { @class = "form-control", id = "rolesDropDown", required = "required" })
 
                     </div>
-
-
-
-
+                    
                     <div>
                         <button id="btn-submit" type="submit" class="btn btn-primary waves-effect waves-light">
                             Submit
@@ -84,63 +88,62 @@
 
 
 
+                </div>
             </div>
         </div>
+
+        <div class="col-lg-7">
+
+            <div class="card m-b-20">
+                <div class="card-body">
+
+                    <h4 class="mt-0 header-title m-b-30">Users List</h4>
+
+
+                    <table id="usersTable" class="table table-hover" style="border-collapse: collapse; border-spacing: 0; width: 100%;">
+
+                        <thead>
+                            <tr>
+                                <th>Email</th>
+                                <th>Role</th>
+                            </tr>
+                        </thead>
+
+
+                    </table>
+
+
+
+                </div>
+            </div>
+        </div> <!-- end col -->
     </div>
-    <div class="col-lg-7">
-        <div class="card m-b-20">
-            <div class="card-body">
-
-                <h4 class="mt-0 header-title m-b-30">Users List</h4>
 
 
-                <table id="usersTable" class="table table-hover" style="border-collapse: collapse; border-spacing: 0; width: 100%;">
-
-                    <thead>
-                        <tr>
-                            <th>Name</th>
-                            <th>Email</th>
-                            <th>Role</th>
-                        </tr>
-                    </thead>
-
-
-                </table>
-
-
-
-            </div>
-        </div>
-    </div> <!-- end col -->
-</div>
-
-
-    </form>
+</form>
 @section scripts
 {
     <script src="~/plugins/parsleyjs/parsley.min.js"></script>
 
     <script>
 
-        $(document).ready(function() {
+        $(document).ready(function () {
 
 
             var usersTable = $("#usersTable").DataTable({
+                responsive: true,
                 ajax: {
                     url: "/api/users/GetUsersWithRoles",
                     dataSrc: ""
                 },
                 columns: [
-                    {
-                        data: "UserName"
-
-                    },
+                   
                     {
                         data: "Email"
 
                     }, {
                         data: "Role",
-                        render: function(data, type, user) {
+                        render: function (data, type, user) {
                             return data == null ? "N/A" : data;
                         }
 
@@ -154,7 +157,7 @@
                 ajax: {
                     url: '/api/users/GetUsers',
                     dataType: 'json',
-                    data: function(params) {
+                    data: function (params) {
                         var query = {
                             search: params.term
                         }
@@ -165,10 +168,10 @@
                     },
                     minimumInputLength: 1,
 
-                    processResults: function(data, page) {
+                    processResults: function (data, page) {
                         return {
                             results: $.map(data,
-                                function(item) {
+                                function (item) {
                                     return {
                                         text: item.UserName,
                                         name: item.UserName,
@@ -193,18 +196,18 @@
 
             $('#assignForm').parsley();
 
-            $('#assignForm').submit(function(e) {
+            $('#assignForm').submit(function (e) {
 
                 e.preventDefault();
 
                 var userId = $("#usersDropDown option:selected").val();
                 var roleId = $("#rolesDropDown option:selected").val();
-                
+
                 $.ajax({
-                        url: "/api/users/AssignRole",
-                        method: "post",
-                        data: { UserId: userId, RoleId: roleId }
-                    })
+                    url: "/api/users/AssignRole",
+                    method: "post",
+                    data: { UserId: userId, RoleId: roleId }
+                })
                     .done(function () {
 
                         rolesSelect.val(null).trigger('change');
@@ -214,7 +217,7 @@
                         toastr.success("User assigned successfully.");
 
                     })
-                    .fail(function() {
+                    .fail(function () {
                         toastr.error("Something unexpected happened.");
                     });
 

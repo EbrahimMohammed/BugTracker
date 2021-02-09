@@ -51,6 +51,9 @@ namespace BugTracker.Core.Domain
         public List<Comments> Comments { get; set; }
 
 
+        public int? OrganizationId { get; set; }
+        public Organization Organization { get; set; }
+
     }
 
 }

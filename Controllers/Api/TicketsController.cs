@@ -19,7 +19,6 @@ using File = BugTracker.Core.Domain.File;
 namespace BugTracker.Controllers.Api
 {
 
-    [System.Web.Http.Authorize]
     public class TicketsController : BaseApiController
     {
 
@@ -56,47 +55,103 @@ namespace BugTracker.Controllers.Api
         }
 
 
-
-
         [System.Web.Http.Route("api/tickets/GetMyTickets")]
         public IHttpActionResult GetMyTickets()
         {
-            List<Ticket> tickets;
+            var userProjects = Context.Projects
+                    .Include(p => p.Users)
+                    .Where(p => p.Users.Select(u => u.Id).Contains(CurrentUserId))
+                    .ToList();
 
-            var user = Context.Users.Single(u => u.Id == CurrentUserId);
 
+            
+            //Explicitly load the projects tickets
+            var projectIds = userProjects.Select(p => p.Id);
 
-
-            if (User.IsInRole(Roles.CanManageUsers))
-            {
-                tickets = Context.Tickets.ToList();
-            }
-            else
-            {
-                //Explicitly load User project and the related tickets ( Msdn way )
-                Context.Entry(user).Collection(u => u.Projects).Query()
-                    .Include(p => p.Users) 
-                    .Include(p => p.Tickets)
+                Context.Tickets
+                    .Include(p => p.Priority)
+                    .Include(p => p.TicketType)
+                    .Include(p => p.Status)
+                    .Where(t => projectIds.Contains(t.ProjectId))
                     .Load();
 
-                tickets = user
-                     .Projects
-                     .SelectMany(p => p.Tickets)
-                     .ToList();
+            var tickets = userProjects.SelectMany(p => p.Tickets).ToList();
 
-            }
-
-
-            Context.Priorities.Load();
-            Context.TicketTypes.Load();
-            Context.TicketStatuses.Load();
-
-
+            
             var ticketsDto = tickets.Select(Mapper.Map<Ticket, TicketDto>);
 
             return Ok(ticketsDto);
 
         }
+
+
+        [System.Web.Http.Route("api/tickets/GetOrganizationTickets")]
+        public IHttpActionResult GetOrganizationTickets()
+        {
+
+            var ticketsDto = Enumerable.Empty<TicketDto>();
+
+
+            var organization = Context.Users
+                .Include(u => u.Organization)
+                .Single(u => u.Id == CurrentUserId)
+                .Organization;
+
+            if (organization != null)
+            {
+                
+                 Context.Entry(organization).Collection(o => o.Tickets).Load();
+
+                 ticketsDto = organization.Tickets.Select(Mapper.Map<Ticket, TicketDto>);
+
+            }
+
+
+            return Ok(ticketsDto);
+        }
+
+
+
+        //Get all tickets
+        //[System.Web.Http.Route("api/tickets/GetMyTickets")]
+        //public IHttpActionResult GetMyTickets()
+        //{
+        //    List<Ticket> tickets;
+
+        //    var user = Context.Users.Single(u => u.Id == CurrentUserId);
+
+
+
+        //    if (User.IsInRole(Roles.CanManageUsers))
+        //    {
+        //        tickets = Context.Tickets.ToList();
+        //    }
+        //    else
+        //    {
+        //        //Explicitly load User project and the related tickets ( Msdn way )
+        //        Context.Entry(user).Collection(u => u.Projects).Query()
+        //            .Include(p => p.Users) 
+        //            .Include(p => p.Tickets)
+        //            .Load();
+
+        //        tickets = user
+        //             .Projects
+        //             .SelectMany(p => p.Tickets)
+        //             .ToList();
+
+        //    }
+
+
+        //    Context.Priorities.Load();
+        //    Context.TicketTypes.Load();
+        //    Context.TicketStatuses.Load();
+
+
+        //    var ticketsDto = tickets.Select(Mapper.Map<Ticket, TicketDto>);
+
+        //    return Ok(ticketsDto);
+
+        //}
 
 
     }
